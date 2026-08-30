@@ -1,0 +1,66 @@
+/*
+  colors.css
+  Single source of truth for every color used in the app.
+  Change a value here and it updates everywhere (light + dark theme).
+*/
+
+:root {
+  /* ---- Brand / accent ramp (violet-indigo, matches the glass reference design) ---- */
+  --accent-600: #6d4bff;
+  --accent-500: #7c5cff;
+  --accent-400: #9678ff;
+  --accent-300: #b39dff;
+  --accent-200: #d9ceff;
+  --accent-gradient: linear-gradient(135deg, #7c5cff 0%, #a78bfa 55%, #6ee7f5 100%);
+  --accent-gradient-soft: linear-gradient(135deg, rgba(124, 92, 255, 0.18), rgba(110, 231, 245, 0.12));
+
+  /* ---- Semantic / status ---- */
+  --success: #22c55e;
+  --warning: #f59e0b;
+
+  /* ---- Shared shadow tint ---- */
+  --shadow-color: 245 40% 55%;
+
+  /* ---- Light theme (default) ---- */
+  --bg: #f4f3f9;
+  --bg-alt: #fbfaff;
+  --surface: rgba(255, 255, 255, 0.62);
+  --surface-solid: #ffffff;
+  --surface-border: rgba(20, 18, 40, 0.08);
+  --surface-hover: rgba(255, 255, 255, 0.85);
+
+  --text-primary: #15131f;
+  --text-secondary: #5a5768;
+  --text-muted: #8b8798;
+  --text-on-accent: #ffffff;
+
+  --nav-bg: rgba(255, 255, 255, 0.55);
+  --input-bg: rgba(255, 255, 255, 0.7);
+
+  --blob-1: rgba(124, 92, 255, 0.35);
+  --blob-2: rgba(110, 231, 245, 0.3);
+  --blob-3: rgba(255, 178, 219, 0.25);
+}
+
+[data-theme="dark"] {
+  --bg: #0c0b13;
+  --bg-alt: #121019;
+  --surface: rgba(255, 255, 255, 0.05);
+  --surface-solid: #17151f;
+  --surface-border: rgba(255, 255, 255, 0.09);
+  --surface-hover: rgba(255, 255, 255, 0.09);
+
+  --text-primary: #f5f4fa;
+  --text-secondary: #b0acc0;
+  --text-muted: #726f85;
+  --text-on-accent: #ffffff;
+
+  --nav-bg: rgba(12, 11, 19, 0.6);
+  --input-bg: rgba(255, 255, 255, 0.06);
+
+  --blob-1: rgba(124, 92, 255, 0.35);
+  --blob-2: rgba(56, 189, 209, 0.22);
+  --blob-3: rgba(255, 138, 202, 0.16);
+
+  --shadow-color: 250 60% 3%;
+}
