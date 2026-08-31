@@ -255,3 +255,23 @@ button {
     justify-content: center;
   }
 }
+
+/* For menu button in navbar */
+
+.mobile-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none !important;
+  }
+
+  .mobile-toggle {
+    display: grid;
+  }
+
+  .nav-cta {
+    display: none;
+  }
+}

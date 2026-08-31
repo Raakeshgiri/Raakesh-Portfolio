@@ -106,9 +106,85 @@ export default function Navbar() {
             <a href="#contact" className="btn btn-primary nav-cta">
               Let&apos;s Talk
             </a>
+
+            <button
+              className="icon-btn mobile-toggle"
+              onClick={() => setOpen(true)}
+              aria-label="Open menu"
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: "50%",
+                placeItems: "center",
+                background: "var(--surface)",
+                border: "1px solid var(--surface-border)",
+              }}
+            >
+              <HiOutlineMenu size={18} />
+            </button>
           </div>
         </div>
       </div>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="mobile-menu"
+            style={{
+              position: "fixed",
+              inset: 0,
+              background: "var(--bg)",
+              zIndex: 200,
+              display: "flex",
+              flexDirection: "column",
+              padding: 24,
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "flex-end" }}>
+              <button
+                onClick={() => setOpen(false)}
+                aria-label="Close menu"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: "50%",
+                  display: "grid",
+                  placeItems: "center",
+                  background: "var(--surface)",
+                  border: "1px solid var(--surface-border)",
+                }}
+              >
+                <HiOutlineX size={20} />
+              </button>
+            </div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginTop: 40 }}>
+              {portfolio.nav.map((item, i) => (
+                <motion.a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  onClick={() => setOpen(false)}
+                  initial={{ opacity: 0, x: 30 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.06 }}
+                  style={{
+                    fontFamily: "Sora",
+                    fontSize: 30,
+                    fontWeight: 600,
+                    padding: "14px 4px",
+                    borderBottom: "1px solid var(--surface-border)",
+                  }}
+                >
+                  {item}
+                </motion.a>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </header>
   );
 }
