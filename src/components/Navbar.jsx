@@ -171,7 +171,7 @@ export default function Navbar() {
                   transition={{ delay: i * 0.06 }}
                   style={{
                     fontFamily: "Sora",
-                    fontSize: 30,
+                    fontSize: 18,
                     fontWeight: 600,
                     padding: "14px 4px",
                     borderBottom: "1px solid var(--surface-border)",
