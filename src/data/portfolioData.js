@@ -129,15 +129,15 @@ export const portfolio = {
       ],
 
       links: [
-        {
-          label: "GitHub Repository",
-          url: "#",
-        },
+        // {
+        // //   label: "GitHub Repository",
+        // //   url: "#",
+        // },
 
-        {
-          label: "Project Demo",
-          url: "#",
-        },
+        // {
+        //   label: "Project Demo",
+        //   url: "#",
+        // },
       ],
 
       screenshots: [
@@ -175,15 +175,15 @@ export const portfolio = {
       ],
 
       links: [
-        {
-          label: "GitHub Repository",
-          url: "#",
-        },
+        // {
+        //   label: "GitHub Repository",
+        //   url: "#",
+        // },
 
-        {
-          label: "Project Demo",
-          url: "#",
-        },
+        // {
+        //   label: "Project Demo",
+        //   url: "#",
+        // },
       ],
 
       screenshots: [
@@ -219,15 +219,15 @@ export const portfolio = {
       ],
 
       links: [
-        {
-          label: "GitHub Repository",
-          url: "#",
-        },
+        // {
+        //   label: "GitHub Repository",
+        //   url: "#",
+        // },
 
-        {
-          label: "Live Website",
-          url: "#",
-        },
+        // {
+        //   label: "Live Website",
+        //   url: "#",
+        // },
       ],
 
       screenshots: [
