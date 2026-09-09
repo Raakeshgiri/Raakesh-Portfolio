@@ -187,10 +187,12 @@ export const portfolio = {
       ],
 
       screenshots: [
-        "/project-images/hrms/screen-1.png",
-        "/project-images/hrms/screen-2.png",
-        "/project-images/hrms/screen-3.png",
-        "/project-images/hrms/screen-4.png",
+        "/project-images/hrms/Home-1.jpeg",
+        "/project-images/hrms/Home-2.jpeg",
+        "/project-images/hrms/Attendance.jpeg",
+        "/project-images/hrms/Leave.jpeg",
+        "/project-images/hrms/Payroll.jpg",
+        "/project-images/hrms/Expense.jpeg",
       ],
     },
 
