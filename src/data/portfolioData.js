@@ -74,36 +74,66 @@ export const portfolio = {
   ],
 
   projects: [
-    {
-      id: "healthcare-mobile-app",
-      number: "01",
-      title: "Healthcare Mobile App",
-      category: "Flutter Application",
+  {
+    id: "healthcare-mobile-app",
 
-      description:
-        "A healthcare mobile solution with responsive UI for managing prescriptions, appointments, patient records, and everyday medical activities.",
-    },
+    title: "Healthcare Mobile App",
 
-    {
-      id: "hrms-mobile-app",
-      number: "02",
-      title: "HRMS Mobile App",
-      category: "Flutter Application",
+    category: "Flutter Application",
 
-      description:
-        "A mobile HRMS solution for managing employees, attendance, payroll, leave, and other day-to-day HR operations.",
-    },
+    image: "/project-images/healthcare/healthcare-cover.png",
 
-    {
-      id: "travelmate",
-      number: "03",
-      title: "Travelmate",
-      category: "React + Spring Boot",
+    description:
+      "A healthcare mobile solution with responsive UI for managing prescriptions, appointments, patient records, and everyday medical activities.",
 
-      description:
-        "A travel planning platform for exploring tour packages, requesting customized trips, and managing bookings with ease with admin management workflows.",
-    },
-  ],
+    technologies: [
+      "Flutter",
+      "Dart",
+      "Firebase",
+      "REST API",
+    ],
+  },
+
+  {
+    id: "hrms-mobile-app",
+
+    title: "HRMS Mobile App",
+
+    category: "Flutter Application",
+
+    image: "/project-images/hrms/hrms-cover.png",
+
+    description:
+      "A mobile HRMS solution for managing employees, attendance, payroll, leave, and other day-to-day HR operations.",
+
+    technologies: [
+      "Flutter",
+      "Dart",
+      "Firebase",
+      "REST API",
+    ],
+  },
+
+  {
+    id: "travelmate",
+
+    title: "Travelmate",
+
+    category: "React + Spring Boot",
+
+    image: "/project-images/travelmate/travelmate-cover.png",
+
+    description:
+      "A travel planning platform for exploring tour packages, requesting customized trips, and managing bookings with ease with admin management workflows.",
+
+    technologies: [
+      "React",
+      "Spring Boot",
+      "MySQL",
+      "REST API",
+    ],
+  },
+],
 
   projectDetails: {
     "healthcare-mobile-app": {
@@ -144,7 +174,6 @@ export const portfolio = {
         "/project-images/healthcare/Login.jpeg",
         "/project-images/healthcare/Home.jpeg",
         "/project-images/healthcare/MoreMenu.jpeg",
-        "/project-images/healthcare/Profile.jpeg",
         "/project-images/healthcare/Patients.jpeg",
         "/project-images/healthcare/Prescription.jpeg",
         "/project-images/healthcare/Visit.jpeg",
@@ -233,9 +262,13 @@ export const portfolio = {
       ],
 
       screenshots: [
-        "/project-images/travelmate/screen-1.png",
-        "/project-images/travelmate/screen-2.png",
-        "/project-images/travelmate/screen-3.png",
+        "/project-images/travelmate/Home.jpeg",
+        "/project-images/travelmate/Admin-Profile.jpeg",
+        "/project-images/travelmate/Package.jpeg",
+        "/project-images/travelmate/Custom-Package.jpeg",
+        "/project-images/travelmate/Payment.jpeg",
+        "/project-images/travelmate/Review.jpeg",
+        "/project-images/travelmate/Contact.jpeg",
       ],
     },
   },

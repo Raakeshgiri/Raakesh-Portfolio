@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { HiOutlineArrowUpRight } from "react-icons/hi2";
+import { HiOutlineArrowRight } from "react-icons/hi2";
 
 import { portfolio } from "../data/portfolioData";
 import SectionTitle from "../components/SectionTitle";
@@ -23,24 +23,26 @@ export default function Projects() {
 
   return (
     <>
-      <section id="projects" className="section">
+      <section id="projects" className="section projects-section">
         <div className="container">
+
+          {/* Section Heading */}
           <SectionTitle
-            eyebrow="Featured Projects"
+            eyebrow="Projects"
             title="Some of My"
             highlight="Recent Work"
             subtitle="A few products I designed and built from the ground up."
           />
 
+          {/* Projects Grid */}
           <div className="projects-grid">
-            {portfolio.projects.map((project, i) => (
-              <motion.button
+            {portfolio.projects.map((project, index) => (
+              <motion.article
                 key={project.id}
-                type="button"
-                className="glass project-card"
+                className="project-card"
                 initial={{
                   opacity: 0,
-                  y: 30,
+                  y: 40,
                 }}
                 whileInView={{
                   opacity: 1,
@@ -48,54 +50,83 @@ export default function Projects() {
                 }}
                 viewport={{
                   once: true,
-                  amount: 0.3,
+                  amount: 0.2,
                 }}
                 transition={{
                   duration: 0.55,
-                  delay: i * 0.12,
+                  delay: index * 0.12,
                 }}
                 whileHover={{
                   y: -8,
                 }}
-                whileTap={{
-                  scale: 0.98,
-                }}
-                onClick={() => openProject(project.id)}
               >
-                {/* Top gradient area */}
-                <div className="project-card-cover">
-                  <span className="project-number">
-                    {project.number}
-                  </span>
-                </div>
 
-                {/* Bottom content */}
-                <div className="project-card-content">
+                {/* Project Image */}
+                <button
+                  type="button"
+                  className="project-card-image-wrapper"
+                  onClick={() => openProject(project.id)}
+                  aria-label={`View ${project.title}`}
+                >
+                  <img
+                    src={project.image}
+                    alt={project.title}
+                    className="project-card-image"
+                  />
+                </button>
+
+                {/* Project Information */}
+                <div className="project-card-body">
+
+                  {/* Category */}
                   <span className="project-card-category">
-                    {project.category.toUpperCase()}
+                    {project.category}
                   </span>
 
-                  <h3>
+                  {/* Title */}
+                  <h3 className="project-card-title">
                     {project.title}
-
-                    <HiOutlineArrowUpRight
-                      size={17}
-                      className="project-card-arrow"
-                    />
                   </h3>
 
-                  <p>{project.description}</p>
+                  {/* Description */}
+                  <p className="project-card-description">
+                    {project.description}
+                  </p>
 
-                  <div className="project-view-hint">
-                    <span>View project</span>
+                  {/* Bottom Section */}
+                  <div className="project-card-footer">
+
+                    {/* Technology Pills */}
+                    <div className="project-card-tech">
+                      {project.technologies.map((technology) => (
+                        <span
+                          key={technology}
+                          className="project-tech-pill"
+                        >
+                          {technology}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Arrow Button */}
+                    <button
+                      type="button"
+                      className="project-card-arrow"
+                      onClick={() => openProject(project.id)}
+                      aria-label={`Open ${project.title}`}
+                    >
+                      <HiOutlineArrowRight />
+                    </button>
+
                   </div>
                 </div>
-              </motion.button>
+              </motion.article>
             ))}
           </div>
         </div>
       </section>
 
+      {/* Existing Project Modal */}
       <ProjectModal
         project={selectedProject}
         onClose={closeProject}
