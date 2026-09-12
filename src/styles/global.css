@@ -198,6 +198,49 @@ button {
 }
 
 /* =========================================================
+   ICON BUTTONS
+========================================================= */
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+
+  padding: 0;
+
+  color: var(--text-primary);
+
+  outline: none;
+
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    border-color 0.25s ease,
+    color 0.25s ease,
+    transform 0.25s ease;
+}
+
+.icon-btn svg {
+  display: block;
+
+  color: currentColor;
+
+  stroke: currentColor;
+}
+
+.icon-btn:hover {
+  transform: translateY(-1px);
+}
+
+.icon-btn:focus-visible {
+  outline:
+    2px solid
+    var(--accent-500);
+
+  outline-offset: 3px;
+}
+
+/* =========================================================
    BACKGROUND BLOBS
 ========================================================= */
 
@@ -300,8 +343,23 @@ button {
   color: var(--text-primary);
 }
 
+.navbar .icon-btn {
+  color: var(--text-primary);
+}
+
+.navbar .icon-btn svg {
+  color: currentColor;
+  stroke: currentColor;
+}
+
 .mobile-toggle {
   display: none;
+  color: var(--text-primary);
+}
+
+.mobile-toggle svg {
+  color: currentColor;
+  stroke: currentColor;
 }
 
 /* =========================================================
@@ -546,12 +604,6 @@ button {
 
   gap: 12px;
 
-  /*
-    Previously:
-    margin-top: auto;
-
-    That caused the large empty space.
-  */
   margin-top: 14px;
 
   padding-top: 0;
@@ -1285,6 +1337,7 @@ button {
 ========================================================= */
 
 @media (max-width: 860px) {
+
   .nav-links,
   .nav-cta {
     display: none !important;
@@ -1292,6 +1345,33 @@ button {
 
   .mobile-toggle {
     display: grid !important;
+
+    align-items: center;
+    justify-content: center;
+
+    color: var(--text-primary) !important;
+  }
+
+  .mobile-toggle svg {
+    width: 20px;
+    height: 20px;
+
+    display: block;
+
+    color: currentColor !important;
+
+    stroke: currentColor !important;
+
+    stroke-width: 2;
+  }
+
+  .navbar .icon-btn {
+    color: var(--text-primary) !important;
+  }
+
+  .navbar .icon-btn svg {
+    color: currentColor !important;
+    stroke: currentColor !important;
   }
 }
 
@@ -1608,6 +1688,20 @@ button {
   .container {
     padding:
       0 18px;
+  }
+
+  .navbar .container {
+    padding:
+      0 16px;
+  }
+
+  .mobile-toggle {
+    color: var(--text-primary) !important;
+  }
+
+  .mobile-toggle svg {
+    color: currentColor !important;
+    stroke: currentColor !important;
   }
 
   .project-card-image-wrapper {
