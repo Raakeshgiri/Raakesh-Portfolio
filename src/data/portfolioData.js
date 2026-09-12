@@ -15,9 +15,7 @@ export const portfolio = {
 
   email: "raakesh9102@gmail.com",
 
-  phone: "+91 63805 96997",
-
-  location: "India",
+  location: "Chennai, India",
 
   stats: [
     {
@@ -29,7 +27,7 @@ export const portfolio = {
       label: "Projects Worked",
     },
     {
-      value: "8+",
+      value: "14+",
       label: "Technologies",
     },
     {
@@ -41,99 +39,109 @@ export const portfolio = {
   skills: [
     {
       name: "Flutter",
-      level: 88,
-    },
-    {
-      name: "React.js",
-      level: 85,
     },
     {
       name: "Java",
-      level: 80,
-    },
-    {
-      name: "Spring Boot",
-      level: 70,
     },
     {
       name: "JavaScript",
-      level: 86,
+    },
+    {
+      name: "React.js",
+    },
+    {
+      name: "Spring Boot",
     },
     {
       name: "MySQL",
-      level: 82,
+    },
+    {
+      name: "HTML",
+    },
+    {
+      name: "CSS",
     },
     {
       name: "Git",
-      level: 90,
     },
     {
-      name: "HTML & CSS",
-      level: 92,
+      name: "GitHub",
+    },
+    {
+      name: "VS Code",
+    },
+    {
+      name: "Postman",
+    },
+    {
+      name: "Adobe XD",
+    },
+    {
+      name: "Vercel",
     },
   ],
 
   projects: [
-  {
-    id: "healthcare-mobile-app",
+    {
+      id: "healthcare-mobile-app",
 
-    title: "Healthcare Mobile App",
+      title: "Healthcare Mobile App",
 
-    category: "Flutter Application",
+      category: "Flutter Application",
 
-    image: "/project-images/healthcare/healthcare-cover.png",
+      image: "/project-images/healthcare/healthcare-cover.png",
 
-    description:
-      "A healthcare mobile solution with responsive UI for managing prescriptions, appointments, patient records, and everyday medical activities.",
+      description:
+        "A healthcare mobile solution with responsive UI for managing prescriptions, appointments, patient records, and everyday medical activities.",
 
-    technologies: [
-      "Flutter",
-      "Dart",
-      "Firebase",
-      "REST API",
-    ],
-  },
+      technologies: [
+        "Flutter",
+        "Dart",
+        "Firebase",
+        "REST API",
+      ],
+    },
 
-  {
-    id: "hrms-mobile-app",
+    {
+      id: "hrms-mobile-app",
 
-    title: "HRMS Mobile App",
+      title: "HRMS Mobile App",
 
-    category: "Flutter Application",
+      category: "Flutter Application",
 
-    image: "/project-images/hrms/hrms-cover.png",
+      image: "/project-images/hrms/hrms-cover.png",
 
-    description:
-      "A mobile HRMS solution for managing employees, attendance, payroll, leave, and other day-to-day HR operations.",
+      description:
+        "A mobile HRMS solution for managing employees, attendance, payroll, leave, and other day-to-day HR operations.",
 
-    technologies: [
-      "Flutter",
-      "Dart",
-      "Firebase",
-      "REST API",
-    ],
-  },
+      technologies: [
+        "Flutter",
+        "Dart",
+        "Firebase",
+        "REST API",
+      ],
+    },
 
-  {
-    id: "travelmate",
+    {
+      id: "travelmate",
 
-    title: "Travelmate",
+      title: "Travelmate",
 
-    category: "React + Spring Boot",
+      category: "React + Spring Boot",
 
-    image: "/project-images/travelmate/travelmate-cover.png",
+      image: "/project-images/travelmate/travelmate-cover.png",
 
-    description:
-      "A travel planning platform for exploring tour packages, requesting customized trips, and managing bookings with ease with admin management workflows.",
+      description:
+        "A travel planning platform for exploring tour packages, requesting customized trips, and managing bookings with ease with admin management workflows.",
 
-    technologies: [
-      "React",
-      "Spring Boot",
-      "MySQL",
-      "REST API",
-    ],
-  },
-],
+      technologies: [
+        "React",
+        "Spring Boot",
+        "MySQL",
+        "REST API",
+      ],
+    },
+  ],
 
   projectDetails: {
     "healthcare-mobile-app": {
@@ -158,17 +166,7 @@ export const portfolio = {
         "Git",
       ],
 
-      links: [
-        // {
-        // //   label: "GitHub Repository",
-        // //   url: "#",
-        // },
-
-        // {
-        //   label: "Project Demo",
-        //   url: "#",
-        // },
-      ],
+      links: [],
 
       screenshots: [
         "/project-images/healthcare/Login.jpeg",
@@ -203,17 +201,7 @@ export const portfolio = {
         "Git",
       ],
 
-      links: [
-        // {
-        //   label: "GitHub Repository",
-        //   url: "#",
-        // },
-
-        // {
-        //   label: "Project Demo",
-        //   url: "#",
-        // },
-      ],
+      links: [],
 
       screenshots: [
         "/project-images/hrms/Home-1.jpeg",
@@ -249,17 +237,7 @@ export const portfolio = {
         "Git",
       ],
 
-      links: [
-        // {
-        //   label: "GitHub Repository",
-        //   url: "#",
-        // },
-
-        // {
-        //   label: "Live Website",
-        //   url: "#",
-        // },
-      ],
+      links: [],
 
       screenshots: [
         "/project-images/travelmate/Home.jpeg",

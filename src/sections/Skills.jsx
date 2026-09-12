@@ -2,10 +2,71 @@ import { motion } from "framer-motion";
 import { portfolio } from "../data/portfolioData";
 import SectionTitle from "../components/SectionTitle";
 
+import {
+  SiFlutter,
+  SiJavascript,
+  SiSpringboot,
+  SiMysql,
+  SiHtml5,
+  SiGit,
+  SiGithub,
+  SiPostman,
+  SiVercel,
+} from "react-icons/si";
+
+import {
+  FaJava,
+  FaReact,
+  FaCss3Alt,
+} from "react-icons/fa";
+
+import {
+  VscVscode,
+} from "react-icons/vsc";
+
+const skillIcons = {
+  Flutter: SiFlutter,
+  Java: FaJava,
+  JavaScript: SiJavascript,
+  "React.js": FaReact,
+  "Spring Boot": SiSpringboot,
+  MySQL: SiMysql,
+  HTML: SiHtml5,
+  CSS: FaCss3Alt,
+  Git: SiGit,
+  GitHub: SiGithub,
+  "VS Code": VscVscode,
+  Postman: SiPostman,
+  Vercel: SiVercel,
+};
+
+const skillClasses = {
+  Flutter: "skill-flutter",
+  Java: "skill-java",
+  JavaScript: "skill-javascript",
+  "React.js": "skill-react",
+  "Spring Boot": "skill-spring",
+  MySQL: "skill-mysql",
+  HTML: "skill-html",
+  CSS: "skill-css",
+  Git: "skill-git",
+  GitHub: "skill-github",
+  "VS Code": "skill-vscode",
+  Postman: "skill-postman",
+  "Adobe XD": "skill-adobexd",
+  Vercel: "skill-vercel",
+};
+
 export default function Skills() {
   return (
-    <section id="skills" className="section" style={{ background: "var(--bg-alt)" }}>
-      <div className="container">
+    <section
+      id="skills"
+      className="section skills-section"
+    >
+      <div className="skills-blob skills-blob-left" />
+      <div className="skills-blob skills-blob-right" />
+
+      <div className="container skills-container">
         <SectionTitle
           eyebrow="My Skills"
           title="Technologies I"
@@ -13,41 +74,82 @@ export default function Skills() {
           subtitle="Tools and languages I use to design, build and ship products end to end."
         />
 
-        <div
-          className="skills-grid"
-          style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "28px 48px" }}
+        <motion.div
+          className="skills-card-grid"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{
+            once: true,
+            amount: 0.15,
+          }}
+          variants={{
+            hidden: {},
+
+            visible: {
+              transition: {
+                staggerChildren: 0.055,
+              },
+            },
+          }}
         >
-          {portfolio.skills.map((skill, i) => (
-            <motion.div
-              key={skill.name}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{ duration: 0.5, delay: (i % 4) * 0.08 }}
-            >
-              <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, fontSize: 14.5 }}>
-                <span style={{ fontWeight: 600 }}>{skill.name}</span>
-                <span style={{ color: "var(--text-secondary)" }}>{skill.level}%</span>
-              </div>
-              <div
-                style={{
-                  height: 8,
-                  borderRadius: 100,
-                  background: "var(--surface-border)",
-                  overflow: "hidden",
+          {portfolio.skills.map((skill) => {
+            const Icon = skillIcons[skill.name];
+
+            return (
+              <motion.div
+                key={skill.name}
+                className="skill-card"
+                variants={{
+                  hidden: {
+                    opacity: 0,
+                    y: 24,
+                    scale: 0.96,
+                  },
+
+                  visible: {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+
+                    transition: {
+                      duration: 0.5,
+                      ease: [0.22, 1, 0.36, 1],
+                    },
+                  },
+                }}
+                whileHover={{
+                  y: -7,
+
+                  transition: {
+                    duration: 0.25,
+                  },
                 }}
               >
-                <motion.div
-                  initial={{ width: 0 }}
-                  whileInView={{ width: `${skill.level}%` }}
-                  viewport={{ once: true, amount: 0.4 }}
-                  transition={{ duration: 1, ease: "easeOut", delay: 0.1 }}
-                  style={{ height: "100%", borderRadius: 100, background: "var(--accent-gradient)" }}
-                />
-              </div>
-            </motion.div>
-          ))}
-        </div>
+                <div
+                  className={`skill-icon-box ${
+                    skillClasses[skill.name] || ""
+                  }`}
+                >
+                  {skill.name === "Adobe XD" ? (
+                    <span className="adobe-xd-icon">
+                      Xd
+                    </span>
+                  ) : (
+                    Icon && (
+                      <Icon className="skill-icon" />
+                    )
+                  )}
+                </div>
+
+                <span className="skill-name">
+                  {skill.name}
+                </span>
+
+                <div className="skill-card-shine" />
+              </motion.div>
+            );
+          })}
+        </motion.div>
       </div>
     </section>
   );

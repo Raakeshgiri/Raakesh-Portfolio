@@ -4,7 +4,6 @@ import emailjs from "@emailjs/browser";
 
 import {
   HiOutlineMail,
-  HiOutlinePhone,
   HiOutlineLocationMarker,
 } from "react-icons/hi";
 
@@ -70,10 +69,6 @@ export default function Contact() {
     {
       icon: <HiOutlineMail size={18} />,
       label: portfolio.email,
-    },
-    {
-      icon: <HiOutlinePhone size={18} />,
-      label: portfolio.phone,
     },
     {
       icon: <HiOutlineLocationMarker size={18} />,
