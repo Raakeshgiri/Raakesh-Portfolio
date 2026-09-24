@@ -1,74 +1,177 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import {
-  HiOutlineCalendar,
+  HiOutlineAcademicCap,
+  HiOutlineBriefcase,
   HiOutlineCodeBracket,
-  HiOutlineCpuChip,
-  HiOutlineTrophy,
+  HiOutlineMapPin,
+  HiOutlineCommandLine,
+  HiOutlineArrowRight,
 } from "react-icons/hi2";
+
 import { portfolio } from "../data/portfolioData";
 
-const icons = [
-  <HiOutlineCalendar size={20} />,
-  <HiOutlineCodeBracket size={20} />,
-  <HiOutlineCpuChip size={20} />,
-  <HiOutlineTrophy size={20} />,
-];
+const snapshotIcons = {
+  training: HiOutlineAcademicCap,
+  experience: HiOutlineBriefcase,
+  focus: HiOutlineCodeBracket,
+  location: HiOutlineMapPin,
+  technologies: HiOutlineCommandLine,
+};
 
 export default function About() {
+  const reduceMotion = useReducedMotion();
+  const details = portfolio.aboutDetails;
+
+  const reveal = (delay = 0) => ({
+    initial: reduceMotion
+      ? false
+      : {
+          opacity: 0,
+          y: 24,
+        },
+
+    whileInView: {
+      opacity: 1,
+      y: 0,
+    },
+
+    viewport: {
+      once: true,
+      amount: 0.15,
+    },
+
+    transition: {
+      duration: 0.55,
+      delay,
+    },
+  });
+
   return (
-    <section id="about" className="section">
+    <section
+      id="about"
+      className="section about-section"
+      aria-labelledby="about-title"
+    >
       <div className="container">
-        <div className="about-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 60, alignItems: "center" }}>
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.6 }}
+        {/* Section header */}
+        <motion.div
+          className="about-heading"
+          style={{
+            maxWidth: 1000,
+            textAlign: "center",
+          }}
+          {...reveal()}
+        >
+          <span
+            className="eyebrow"
+            style={{
+              justifyContent: "center",
+              marginBottom: 16,
+            }}
           >
-            <span className="eyebrow">About Me</span>
-            <h2 style={{ fontSize: "clamp(26px, 3.4vw, 34px)", marginBottom: 18 }}>
-              Designing with focus,
-              <br />
-              <span className="text-gradient">building with purpose.</span>
-            </h2>
-            <p style={{ color: "var(--text-secondary)", lineHeight: 1.8, fontSize: 15.5 }}>
-              {portfolio.about}
-            </p>
+            ABOUT ME
+          </span>
+
+          <h2
+            id="about-title"
+            style={{
+              fontSize: "clamp(30px, 4vw, 46px)",
+              fontWeight: 700,
+              lineHeight: 1.2,
+              letterSpacing: "-0.02em",
+              marginBottom: 14,
+              textWrap: "balance",
+            }}
+          >
+            Here is What{" "}
+            <span className="text-gradient">
+              You Should Know
+            </span>
+          </h2>
+
+          <p
+            style={{
+              color: "var(--text-secondary)",
+              fontSize: "clamp(15px, 1.6vw, 18px)",
+              lineHeight: 1.75,
+              margin: 0,
+            }}
+          >
+            {details.subtitle}
+          </p>
+        </motion.div>
+
+        {/* About content */}
+        <div className="about-content-grid">
+          <motion.div
+            className="about-biography"
+            {...reveal(0.08)}
+          >
+            {details.paragraphs.map((paragraph, index) => (
+              <p key={index}>{paragraph}</p>
+            ))}
+
+            <a
+              className="about-action"
+              href={details.cta.href}
+            >
+              {details.cta.label}
+
+              <HiOutlineArrowRight
+                size={20}
+                aria-hidden="true"
+              />
+            </a>
           </motion.div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-            {portfolio.stats.map((stat, i) => (
-              <motion.div
-                key={stat.label}
-                className="glass"
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
-                whileHover={{ y: -6 }}
-                style={{ padding: "26px 20px" }}
-              >
-                <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: 12,
-                    background: "var(--accent-gradient-soft)",
-                    color: "var(--accent-500)",
-                    display: "grid",
-                    placeItems: "center",
-                    marginBottom: 14,
-                  }}
-                >
-                  {icons[i]}
-                </div>
-                <div style={{ fontFamily: "Sora", fontSize: 26, fontWeight: 700 }}>{stat.value}</div>
-                <div style={{ color: "var(--text-secondary)", fontSize: 13.5, marginTop: 4 }}>
-                  {stat.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {/* Developer snapshot */}
+          <motion.aside
+            className="about-snapshot"
+            aria-labelledby="snapshot-title"
+            {...reveal(0.16)}
+          >
+            <h3 id="snapshot-title">
+              Developer Snapshot
+            </h3>
+
+            <dl className="about-snapshot-list">
+              {details.snapshot.map((item) => {
+                const Icon =
+                  snapshotIcons[item.id] ||
+                  HiOutlineCodeBracket;
+
+                return (
+                  <div
+                    className="about-snapshot-row"
+                    key={item.id}
+                  >
+                    <span
+                      className="about-snapshot-icon"
+                      aria-hidden="true"
+                    >
+                      <Icon size={25} />
+                    </span>
+
+                    <div className="about-snapshot-copy">
+                      <dt>{item.label}</dt>
+
+                      <dd>
+                        {item.id === "location"
+                          ? portfolio.location
+                          : item.value}
+                      </dd>
+
+                      {item.detail && (
+                        <dd className="about-snapshot-detail">
+                          {item.detail}
+                        </dd>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </dl>
+          </motion.aside>
         </div>
       </div>
     </section>

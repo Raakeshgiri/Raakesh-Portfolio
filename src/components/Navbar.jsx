@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   HiOutlineSun,
   HiOutlineMoon,
@@ -12,9 +12,50 @@ import { useTheme } from "../context/ThemeContext";
 
 export default function Navbar() {
   const { theme, toggleTheme } = useTheme();
+  const headerRef = useRef(null);
+  const menuButtonRef = useRef(null);
+  const reduceMotion = useReducedMotion();
 
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("home");
+
+  // Links, including Journey, are supplied by portfolio.nav.
+  // Keep the selected tab in sync with the section visible below the header.
+  useEffect(() => {
+    let frame = 0;
+    const updateActive = () => {
+      frame = 0;
+      const sections = portfolio.nav
+        .map((item) => document.getElementById(item.toLowerCase()))
+        .filter(Boolean);
+      if (!sections.length) return;
+      const header = document.querySelector(".navbar");
+      const threshold = (header?.getBoundingClientRect().bottom || 100) + 48;
+      let current = sections[0].id;
+      sections.forEach((section) => {
+        if (section.getBoundingClientRect().top <= threshold) current = section.id;
+      });
+      if (window.scrollY > 0 && window.innerHeight + window.scrollY >=
+          document.documentElement.scrollHeight - 4) {
+        current = sections[sections.length - 1].id;
+      }
+      setActiveTab(current);
+    };
+    const scheduleUpdate = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateActive);
+    };
+    updateActive();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+    window.addEventListener("hashchange", scheduleUpdate);
+    return () => {
+      window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.removeEventListener("hashchange", scheduleUpdate);
+    };
+  }, []);
 
   // Detect page scroll
   useEffect(() => {
@@ -22,25 +63,49 @@ export default function Navbar() {
       setScrolled(window.scrollY > 12);
     };
 
-    window.addEventListener("scroll", onScroll);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
   }, []);
 
-  // Disable page scrolling when mobile menu is open
+  // Close the dropdown on outside clicks, Escape, or a desktop resize.
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-
+    if (!open) return;
+    const onPointerDown = (event) => {
+      if (!headerRef.current?.contains(event.target)) setOpen(false);
+    };
+    const onKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        menuButtonRef.current?.focus();
+      }
+    };
+    const onResize = () => {
+      if (menuButtonRef.current &&
+          window.getComputedStyle(menuButtonRef.current).display === "none") {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    window.addEventListener("resize", onResize);
     return () => {
-      document.body.style.overflow = "";
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("resize", onResize);
     };
   }, [open]);
 
   return (
     <header
+      ref={headerRef}
       className="navbar"
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
+      }}
       style={{
         position: "fixed",
         top: 0,
@@ -54,7 +119,7 @@ export default function Navbar() {
       }}
     >
       <div
-        className="container"
+        className="container navbar-dropdown-anchor"
         style={{
           display: "flex",
           alignItems: "center",
@@ -79,6 +144,7 @@ export default function Navbar() {
           <a
             href="#home"
             className="navbar-brand"
+            onClick={() => setOpen(false)}
             style={{
               display: "flex",
               alignItems: "center",
@@ -118,6 +184,7 @@ export default function Navbar() {
 
           {/* Desktop Navigation */}
           <nav
+            aria-label="Main navigation"
             className="nav-links"
             style={{
               display: "flex",
@@ -129,17 +196,9 @@ export default function Navbar() {
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="nav-link"
-                style={{
-                  padding: "8px 14px",
-
-                  borderRadius: 100,
-
-                  fontSize: 14.5,
-                  fontWeight: 500,
-
-                  color: "var(--text-secondary)",
-                }}
+                className={`nav-link${activeTab === item.toLowerCase() ? " is-active" : ""}`}
+                aria-current={activeTab === item.toLowerCase() ? "location" : undefined}
+                onClick={() => setActiveTab(item.toLowerCase())}
               >
                 {item}
               </a>
@@ -206,8 +265,12 @@ export default function Navbar() {
             {/* Mobile Menu Button */}
             <button
               className="icon-btn mobile-toggle"
-              onClick={() => setOpen(true)}
-              aria-label="Open menu"
+              ref={menuButtonRef}
+              type="button"
+              onClick={() => setOpen((previous) => !previous)}
+              aria-label={open ? "Close menu" : "Open menu"}
+              aria-expanded={open}
+              aria-controls="mobile-navigation"
               style={{
                 width: 38,
                 height: 38,
@@ -229,178 +292,54 @@ export default function Navbar() {
                 flexShrink: 0,
               }}
             >
-              <HiOutlineMenu
-                size={20}
-                color="currentColor"
-                style={{
-                  display: "block",
-                }}
-              />
+              {open ? (
+                <HiOutlineX size={20} color="currentColor" style={{ display: "block" }} />
+              ) : (
+                <HiOutlineMenu size={20} color="currentColor" style={{ display: "block" }} />
+              )}
             </button>
           </div>
         </div>
+      
+        {/* Floating mobile menu beneath the existing navbar. */}
+        <AnimatePresence>
+          {open && (
+            <motion.nav
+              id="mobile-navigation"
+              aria-label="Mobile navigation"
+              className="mobile-dropdown-panel"
+              initial={reduceMotion ? false : { opacity: 0, y: -10, scale: 0.98 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, y: -8, scale: 0.98 }}
+              transition={{ duration: reduceMotion ? 0 : 0.2 }}
+            >
+              <ul className="mobile-dropdown-list">
+                {portfolio.nav.map((item) => {
+                  const id = item.toLowerCase();
+                  const isActive = activeTab === id;
+                  return (
+                    <li key={item}>
+                      <a
+                        href={`#${id}`}
+                        className={`mobile-dropdown-link${isActive ? " is-active" : ""}`}
+                        aria-current={isActive ? "location" : undefined}
+                        onClick={() => {
+                          setActiveTab(id);
+                          setOpen(false);
+                          menuButtonRef.current?.focus({ preventScroll: true });
+                        }}
+                      >
+                        <span>{item}</span>
+                        <span className="mobile-dropdown-dot" aria-hidden="true" />
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </div>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{
-              opacity: 0,
-            }}
-            animate={{
-              opacity: 1,
-            }}
-            exit={{
-              opacity: 0,
-            }}
-            transition={{
-              duration: 0.25,
-            }}
-            className="mobile-menu"
-            style={{
-              position: "fixed",
-              inset: 0,
-
-              background: "var(--bg)",
-
-              zIndex: 200,
-
-              display: "flex",
-              flexDirection: "column",
-
-              padding: 24,
-            }}
-          >
-            {/* Mobile Menu Top */}
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              {/* Mobile Logo */}
-              <a
-                href="#home"
-                onClick={() => setOpen(false)}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 10,
-
-                  fontFamily: "Sora",
-                  fontWeight: 700,
-
-                  color: "var(--text-primary)",
-                }}
-              >
-                <span
-                  style={{
-                    width: 34,
-                    height: 34,
-
-                    borderRadius: 10,
-
-                    background: "var(--accent-gradient)",
-
-                    display: "grid",
-                    placeItems: "center",
-
-                    color: "#ffffff",
-
-                    fontSize: 15,
-                  }}
-                >
-                  {portfolio.name.charAt(0)}
-                </span>
-
-                {portfolio.name}
-              </a>
-
-              {/* Close Menu */}
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Close menu"
-                className="icon-btn"
-                style={{
-                  width: 40,
-                  height: 40,
-
-                  padding: 0,
-
-                  borderRadius: "50%",
-
-                  display: "grid",
-                  placeItems: "center",
-
-                  background: "var(--surface)",
-
-                  border: "1px solid var(--surface-border)",
-
-                  color: "var(--text-primary)",
-
-                  cursor: "pointer",
-                }}
-              >
-                <HiOutlineX
-                  size={21}
-                  color="currentColor"
-                  style={{
-                    display: "block",
-                  }}
-                />
-              </button>
-            </div>
-
-            {/* Mobile Navigation Links */}
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-
-                gap: 6,
-
-                marginTop: 40,
-              }}
-            >
-              {portfolio.nav.map((item, i) => (
-                <motion.a
-                  key={item}
-                  href={`#${item.toLowerCase()}`}
-                  onClick={() => setOpen(false)}
-                  initial={{
-                    opacity: 0,
-                    x: 30,
-                  }}
-                  animate={{
-                    opacity: 1,
-                    x: 0,
-                  }}
-                  transition={{
-                    delay: i * 0.06,
-                  }}
-                  style={{
-                    fontFamily: "Sora",
-
-                    fontSize: 18,
-                    fontWeight: 600,
-
-                    padding: "14px 4px",
-
-                    color: "var(--text-primary)",
-
-                    borderBottom:
-                      "1px solid var(--surface-border)",
-                  }}
-                >
-                  {item}
-                </motion.a>
-              ))}
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </header>
   );
 }

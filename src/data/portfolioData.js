@@ -17,6 +17,55 @@ export const portfolio = {
 
   location: "Chennai, India",
 
+  // ABOUT SECTION
+  aboutDetails: {
+    subtitle:
+      "Who I am, what I build, and what drives me as a developer.",
+
+    paragraphs: [
+      "I’m Raakesh G A, a Mobile App & Full Stack Developer based in Chennai, India. I enjoy turning ideas into practical web and mobile applications, with a focus on clean interfaces, responsive layouts, and a smooth user experience.",
+
+      "My development journey spans Flutter, Dart, Java, Spring Boot, React, JavaScript, MySQL, and REST APIs. I enjoy building user interfaces, connecting applications to APIs, and solving the technical challenges that bring a product together.",
+
+      "My projects include healthcare and HRMS mobile applications, alongside Travelmate, a full-stack travel planning platform. I approach each project with thoughtful design, clean code, and a willingness to learn and improve.",
+    ],
+
+    cta: {
+      label: "Explore My Projects",
+      href: "#projects",
+    },
+
+    snapshot: [
+      {
+        id: "training",
+        label: "Education",
+        value: "M.Sc. Computer Science",
+      },
+      {
+        id: "experience",
+        label: "Experience",
+        value: "Mobile App Developer Intern",
+        detail: "Cloud ECS Infotech",
+      },
+      {
+        id: "focus",
+        label: "Focus",
+        value: "Mobile App & Full Stack Development",
+      },
+      {
+        id: "location",
+        label: "Location",
+        value: "Chennai, India",
+      },
+      {
+        id: "technologies",
+        label: "Core Technologies",
+        value: "Flutter, React & Spring Boot",
+      },
+    ],
+  },
+
+  // STATISTICS
   stats: [
     {
       value: "6+",
@@ -36,6 +85,7 @@ export const portfolio = {
     },
   ],
 
+  // SKILLS SECTION
   skills: [
     {
       name: "Flutter",
@@ -81,6 +131,7 @@ export const portfolio = {
     },
   ],
 
+  // PROJECT CARDS
   projects: [
     {
       id: "healthcare-mobile-app",
@@ -143,6 +194,7 @@ export const portfolio = {
     },
   ],
 
+  // PROJECT MODAL DETAILS
   projectDetails: {
     "healthcare-mobile-app": {
       type: "mobile",
@@ -251,11 +303,121 @@ export const portfolio = {
     },
   },
 
+  // JOURNEY SECTION
+  // Icon names match the icon mapping in Journey.jsx.
+  journey: {
+    subtitle:
+      "From studying computer science to building real-world applications — a journey of learning, hands-on experience, and continuous growth.",
+
+    milestones: [
+      {
+        id: "undergraduate",
+
+        year: "2020",
+
+        icon: "education",
+
+        title: "Computer Science Foundations",
+
+        organization:
+          "SRM Institute of Science and Technology, Ramapuram",
+
+        period: "2020 – 2023",
+
+        highlights: [
+          "Completed a Bachelor of Computer Science with 87.9%.",
+          "Built a foundation in programming and software development.",
+          "Won second place in a paper presentation on “Smart Devices”.",
+        ],
+      },
+
+      {
+        id: "postgraduate",
+
+        year: "2023",
+
+        icon: "education",
+
+        title: "M.Sc. Computer Science",
+
+        organization: "Thiruthangal Nadar College",
+
+        period: "2023 – 2025",
+
+        highlights: [
+          "Completed postgraduate studies with 78.9%.",
+          "Organized the NEXTGEN NEXUS Hackathon and Business Plan Presentation.",
+          "Applied learning through a full-stack final-year project.",
+        ],
+      },
+
+      {
+        id: "pk-innovatives",
+
+        year: "2025",
+
+        icon: "work",
+
+        title: "Software Engineer Intern",
+
+        organization: "PK Innovatives · Chennai",
+
+        period: "Aug 2025 – Mar 2026",
+
+        highlights: [
+          "Gained professional software engineering experience.",
+          "Developed practical skills through hands-on work.",
+          "Strengthened problem-solving and collaboration skills.",
+        ],
+      },
+
+      {
+        id: "cloud-ecs",
+
+        year: "2026",
+
+        icon: "mobile",
+
+        title: "Flutter Intern",
+
+        organization: "Cloud ECS Infotech · Chennai",
+
+        period: "Jul 2026 – Present",
+
+        highlights: [
+          "Building practical experience in Flutter mobile development.",
+          "Working with API-driven interfaces and application workflows.",
+          "Continuing to improve development and debugging skills.",
+        ],
+      },
+
+      {
+        id: "future",
+
+        year: "Future",
+
+        icon: "future",
+
+        title: "What’s Next?",
+
+        organization: "Learning & Growth",
+
+        highlights: [
+          "Grow as a Mobile App & Full Stack Developer.",
+          "Deepen knowledge of application architecture and performance.",
+          "Build useful products and keep learning through real-world challenges.",
+        ],
+      },
+    ],
+  },
+
+  // NAVIGATION ORDER
   nav: [
     "Home",
     "About",
     "Skills",
     "Projects",
+    "Journey",
     "Contact",
   ],
 };
