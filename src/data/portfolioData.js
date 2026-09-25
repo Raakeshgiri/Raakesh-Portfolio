@@ -87,48 +87,20 @@ export const portfolio = {
 
   // SKILLS SECTION
   skills: [
-    {
-      name: "Flutter",
-    },
-    {
-      name: "Java",
-    },
-    {
-      name: "JavaScript",
-    },
-    {
-      name: "React.js",
-    },
-    {
-      name: "Spring Boot",
-    },
-    {
-      name: "MySQL",
-    },
-    {
-      name: "HTML",
-    },
-    {
-      name: "CSS",
-    },
-    {
-      name: "Git",
-    },
-    {
-      name: "GitHub",
-    },
-    {
-      name: "VS Code",
-    },
-    {
-      name: "Postman",
-    },
-    {
-      name: "Adobe XD",
-    },
-    {
-      name: "Vercel",
-    },
+    { name: "Flutter" },
+    { name: "Java" },
+    { name: "JavaScript" },
+    { name: "React.js" },
+    { name: "Spring Boot" },
+    { name: "MySQL" },
+    { name: "HTML" },
+    { name: "CSS" },
+    { name: "Git" },
+    { name: "GitHub" },
+    { name: "VS Code" },
+    { name: "Postman" },
+    { name: "Adobe XD" },
+    { name: "Vercel" },
   ],
 
   // PROJECT CARDS
@@ -411,11 +383,110 @@ export const portfolio = {
     ],
   },
 
+  // EXPERIENCE SECTION
+  // Used by the new Experience.jsx component.
+  experience: {
+    subtitle:
+      "My professional journey so far, the work I do, and the skills I continue to develop.",
+
+    roles: [
+      {
+        id: "cloud-ecs",
+
+        role: "Flutter Intern",
+
+        company: "Cloud ECS Infotech",
+
+        initials: "ECS",
+
+        period: "Jul 2026 – Present",
+
+        location: "Chennai, India",
+
+        current: true,
+
+        technologies: [
+          "Flutter",
+          "Dart",
+          "REST APIs",
+        ],
+
+        description:
+          "Building practical experience in Flutter mobile development, with a focus on API-driven interfaces and application workflows.",
+      },
+
+      {
+        id: "pk-innovatives",
+
+        role: "Software Engineer Intern",
+
+        company: "PK Innovatives",
+
+        initials: "PK",
+
+        period: "Aug 2025 – Mar 2026",
+
+        location: "Chennai, India",
+
+        current: false,
+
+        technologies: [
+          "React.js",
+          "Node.js",
+          "MongoDB",
+          "REST APIs",
+        ],
+
+        description:
+          "Gained professional software engineering experience, developing practical skills through hands-on work and collaboration.",
+      },
+    ],
+
+    capabilities: [
+      "Build cross-platform mobile applications with Flutter.",
+      "Integrate REST APIs and token-based authentication.",
+      "Create reusable components and responsive interfaces.",
+      "Implement pagination, filtering, and application workflows.",
+      "Debug UI issues and test API integrations.",
+    ],
+
+    projectWork: [
+      {
+        name: "Medicore HMS",
+        detail: "Hospital and clinic management",
+        icon: "clinic",
+      },
+      {
+        name: "AI Agent",
+        detail: "CRM and invoice collection",
+        icon: "mobile",
+      },
+      {
+        name: "CRM Application",
+        detail: "React.js and Node.js modules",
+        icon: "web",
+      },
+    ],
+
+    highlights: [
+      "Developed patient, appointment, payment, and invoice workflows.",
+      "Built reusable models, services, controllers, and dashboard components with GetX.",
+      "Integrated REST APIs with authentication, pagination, filtering, and sorting.",
+      "Implemented PDF invoices and receipts with Android file storage integration.",
+      "Contributed to React.js and Node.js application modules.",
+      "Tested APIs and resolved UI and application issues.",
+    ],
+
+    statement:
+      "I am continuously learning and improving my skills to build better applications and solve real-world problems through technology.",
+  },
+
   // NAVIGATION ORDER
   nav: [
     "Home",
     "About",
     "Skills",
+    "Experience",
     "Projects",
     "Journey",
     "Contact",

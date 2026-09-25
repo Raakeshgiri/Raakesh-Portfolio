@@ -20,7 +20,7 @@ export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("home");
 
-  // Links, including Journey, are supplied by portfolio.nav.
+  // Links, including Experience and Journey, are supplied by portfolio.nav.
   // Keep the selected tab in sync with the section visible below the header.
   useEffect(() => {
     let frame = 0;
