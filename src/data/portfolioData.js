@@ -3,6 +3,14 @@ export const portfolio = {
 
   role: "Mobile App & Full Stack Developer",
 
+  // Rotating titles shown below the name in the hero section.
+  heroRoles: [
+    "Flutter Developer",
+    "Software Developer",
+    "Mobile App Developer",
+    "Full Stack Developer",
+  ],
+
   profileImage: "/profile.jpeg",
 
   eyebrow: "HELLO, I'M",
@@ -107,11 +115,8 @@ export const portfolio = {
   projects: [
     {
       id: "healthcare-mobile-app",
-
       title: "Healthcare Mobile App",
-
       category: "Flutter Application",
-
       image: "/project-images/healthcare/healthcare-cover.png",
 
       description:
@@ -124,14 +129,10 @@ export const portfolio = {
         "REST API",
       ],
     },
-
     {
       id: "hrms-mobile-app",
-
       title: "HRMS Mobile App",
-
       category: "Flutter Application",
-
       image: "/project-images/hrms/hrms-cover.png",
 
       description:
@@ -144,14 +145,10 @@ export const portfolio = {
         "REST API",
       ],
     },
-
     {
       id: "travelmate",
-
       title: "Travelmate",
-
       category: "React + Spring Boot",
-
       image: "/project-images/travelmate/travelmate-cover.png",
 
       description:
@@ -170,11 +167,8 @@ export const portfolio = {
   projectDetails: {
     "healthcare-mobile-app": {
       type: "mobile",
-
       label: "Mobile Application",
-
       title: "Healthcare Mobile App",
-
       year: "2026",
 
       description:
@@ -205,11 +199,8 @@ export const portfolio = {
 
     "hrms-mobile-app": {
       type: "mobile",
-
       label: "Mobile Application",
-
       title: "HRMS Mobile App",
-
       year: "2026",
 
       description:
@@ -239,11 +230,8 @@ export const portfolio = {
 
     travelmate: {
       type: "web",
-
       label: "Full Stack Web Application",
-
       title: "Travelmate",
-
       year: "2025",
 
       description:
@@ -284,11 +272,8 @@ export const portfolio = {
     milestones: [
       {
         id: "undergraduate",
-
         year: "2020",
-
         icon: "education",
-
         title: "Computer Science Foundations",
 
         organization:
@@ -302,18 +287,12 @@ export const portfolio = {
           "Won second place in a paper presentation on “Smart Devices”.",
         ],
       },
-
       {
         id: "postgraduate",
-
         year: "2023",
-
         icon: "education",
-
         title: "M.Sc. Computer Science",
-
         organization: "Thiruthangal Nadar College",
-
         period: "2023 – 2025",
 
         highlights: [
@@ -322,18 +301,12 @@ export const portfolio = {
           "Applied learning through a full-stack final-year project.",
         ],
       },
-
       {
         id: "pk-innovatives",
-
         year: "2025",
-
         icon: "work",
-
         title: "Software Engineer Intern",
-
         organization: "PK Innovatives · Chennai",
-
         period: "Aug 2025 – Mar 2026",
 
         highlights: [
@@ -342,18 +315,12 @@ export const portfolio = {
           "Strengthened problem-solving and collaboration skills.",
         ],
       },
-
       {
         id: "cloud-ecs",
-
         year: "2026",
-
         icon: "mobile",
-
         title: "Flutter Intern",
-
         organization: "Cloud ECS Infotech · Chennai",
-
         period: "Jul 2026 – Present",
 
         highlights: [
@@ -362,16 +329,11 @@ export const portfolio = {
           "Continuing to improve development and debugging skills.",
         ],
       },
-
       {
         id: "future",
-
         year: "Future",
-
         icon: "future",
-
         title: "What’s Next?",
-
         organization: "Learning & Growth",
 
         highlights: [
@@ -392,17 +354,11 @@ export const portfolio = {
     roles: [
       {
         id: "cloud-ecs",
-
         role: "Flutter Intern",
-
         company: "Cloud ECS Infotech",
-
         initials: "ECS",
-
         period: "Jul 2026 – Present",
-
         location: "Chennai, India",
-
         current: true,
 
         technologies: [
@@ -414,20 +370,13 @@ export const portfolio = {
         description:
           "Building practical experience in Flutter mobile development, with a focus on API-driven interfaces and application workflows.",
       },
-
       {
         id: "pk-innovatives",
-
         role: "Software Engineer Intern",
-
         company: "PK Innovatives",
-
         initials: "PK",
-
         period: "Aug 2025 – Mar 2026",
-
         location: "Chennai, India",
-
         current: false,
 
         technologies: [

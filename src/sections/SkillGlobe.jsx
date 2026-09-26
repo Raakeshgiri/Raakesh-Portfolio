@@ -64,6 +64,23 @@ function buildLandDots() {
   return out;
 }
 /* ================= Maths ================= */
+const HOME_TILT = 0; // Upright: equator aligned with the horizontal center.
+const TILT_RETURN_SPEED = 5; // Higher values return to center sooner.
+
+function recenterTilt(m, seconds, reduce) {
+  if (reduce) { m.ax = HOME_TILT; m.vx = 0; return; }
+  // Exact critically damped spring: smooth settling without oscillation.
+  const offset = m.ax - HOME_TILT;
+  const coupled = m.vx + TILT_RETURN_SPEED * offset;
+  const decay = Math.exp(-TILT_RETURN_SPEED * seconds);
+  m.ax = HOME_TILT + (offset + coupled * seconds) * decay;
+  m.vx = (m.vx - TILT_RETURN_SPEED * coupled * seconds) * decay;
+  if (Math.abs(m.ax - HOME_TILT) < 0.0001 && Math.abs(m.vx) < 0.0001) {
+    m.ax = HOME_TILT;
+    m.vx = 0;
+  }
+}
+
 const rotate = ([x, y, z], ax, ay) => {
   const x1 = x * Math.cos(ay) + z * Math.sin(ay);
   const z1 = -x * Math.sin(ay) + z * Math.cos(ay);
@@ -71,8 +88,6 @@ const rotate = ([x, y, z], ax, ay) => {
   const z2 = y * Math.sin(ax) + z1 * Math.cos(ax);
   return [x1, y2, z2];
 };
-const norm = (v) => { const l = Math.hypot(...v); return v.map((x) => x / l); };
-const cross = (a, b) => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
 const slerp = (a, b, t) => {
   const d = Math.min(1, Math.max(-1, a[0] * b[0] + a[1] * b[1] + a[2] * b[2]));
   const th = Math.acos(d);
@@ -99,31 +114,62 @@ const rgba = (hex, a) => {
   const n = parseInt(hex.slice(1), 16);
   return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
 };
-/* Skills of one category sit together; categories spread over the globe */
+/* Evenly distribute every skill over the sphere, independent of category. */
 function layout() {
-  const keys = Object.keys(categories);
-  const centers = [
-    [-0.55, -0.35], [0.9, -0.2], [2.2, 0.25], [-1.9, 0.3], [3.4, -0.45],
-  ]; // [longitude, latitude] in radians
-  const pts = new Array(skills.length);
+  const goldenAngle = Math.PI * (3 - Math.sqrt(5));
+  const pts = skills.map((_, i) => {
+    const y = 1 - (2 * (i + 0.5)) / skills.length;
+    const radius = Math.sqrt(1 - y * y);
+    const theta = i * goldenAngle;
+    return [Math.cos(theta) * radius, y, Math.sin(theta) * radius];
+  });
   const angles = {};
-  keys.forEach((key, ci) => {
-    const [lon, lat] = centers[ci % centers.length];
-    const cen = [Math.cos(lat) * Math.sin(lon), -Math.sin(lat), Math.cos(lat) * Math.cos(lon)];
-    const u = norm(cross([0, 1, 0], cen));
-    const v = cross(cen, u);
-    const ids = skills.map((s, i) => (s.cat === key ? i : -1)).filter((i) => i >= 0);
-    ids.forEach((id, k) => {
-      const t = (k / ids.length) * Math.PI * 2 + 0.6;
-      const r = 0.5;
-      pts[id] = norm(cen.map((c, d) => c + (u[d] * Math.cos(t) + v[d] * Math.sin(t)) * r));
-    });
-    // rotation that brings this cluster to the front
-    const ay = Math.atan2(-cen[0], cen[2]);
-    const z1 = -cen[0] * Math.sin(ay) + cen[2] * Math.cos(ay);
-    angles[key] = { ay, ax: Math.atan2(cen[1], z1) };
+  Object.keys(categories).forEach((key) => {
+    const first = skills.findIndex((skill) => skill.cat === key);
+    if (first < 0) { angles[key] = { ax: -0.3, ay: 0 }; return; }
+    const p = pts[first];
+    const ay = Math.atan2(-p[0], p[2]);
+    const z = -p[0] * Math.sin(ay) + p[2] * Math.cos(ay);
+    angles[key] = { ay, ax: Math.atan2(p[1], z) };
   });
   return { pts, angles };
+}
+
+// Separate projected labels while keeping their pins on the globe surface.
+function spaceLabels(rp, elements, center, radius, size) {
+  const labels = rp.map(([x, y, z], i) => {
+    const scale = 0.82 + z * 0.18;
+    const width = (elements[i]?.offsetWidth || 90) * scale;
+    const height = (elements[i]?.offsetHeight || 30) * scale;
+    return { x: center + x * radius, y: center + y * radius - 20 - height / 2,
+      width, height, scale, visible: z > 0.02 };
+  });
+  for (let pass = 0; pass < 16; pass++) {
+    for (let i = 0; i < labels.length; i++) {
+      const a = labels[i];
+      if (!a.visible) continue;
+      for (let j = i + 1; j < labels.length; j++) {
+        const b = labels[j];
+        if (!b.visible) continue;
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const overlapX = (a.width + b.width) / 2 + 10 - Math.abs(dx);
+        const overlapY = (a.height + b.height) / 2 + 10 - Math.abs(dy);
+        if (overlapX <= 0 || overlapY <= 0) continue;
+        if (overlapX < overlapY) {
+          const shift = (overlapX / 2 + 0.5) * (dx >= 0 ? 1 : -1);
+          a.x -= shift; b.x += shift;
+        } else {
+          const shift = (overlapY / 2 + 0.5) * (dy >= 0 ? 1 : -1);
+          a.y -= shift; b.y += shift;
+        }
+      }
+    }
+    labels.forEach((a) => {
+      a.x = Math.max(a.width / 2 + 6, Math.min(size - a.width / 2 - 6, a.x));
+      a.y = Math.max(a.height / 2 + 6, Math.min(size - a.height / 2 - 40, a.y));
+    });
+  }
+  return labels;
 }
 const indexOf = Object.fromEntries(skills.map((s, i) => [s.name, i]));
 const links = connections
@@ -135,8 +181,9 @@ export default function SkillGlobe() {
   const canvasRef = useRef(null);
   const chipRefs = useRef([]);
   const live = useRef({ filter: null, active: null });
-  const motion = useRef({ ax: -0.3, ay: 0.5, vx: 0, vy: 0.0022, drag: null });
-  const [paused, setPaused] = useState(false);
+  // Velocities are radians per second, independent of display refresh rate.
+  const motion = useRef({ ax: HOME_TILT, ay: 0.5, vx: 0, vy: 0.132,
+    direction: 1, hoverReady: true, pointerX: null, pointerY: null, drag: null });
   const [filter, setFilter] = useState(null);
   const [selected, setSelected] = useState(null);
   const [hovered, setHovered] = useState(null);
@@ -150,7 +197,7 @@ export default function SkillGlobe() {
     live.current.active = value ?? live.current.selected;
     setHovered(value);
   };
-  live.current.paused = paused;
+  live.current.paused = false;
   live.current.filter = filter;
   live.current.active = active;
   live.current.selected = selected;
@@ -168,10 +215,13 @@ export default function SkillGlobe() {
     const { pts, angles } = layout();
     const m = motion.current;
     let raf;
+    let previousLabels = [];
+    let previousSize = 0;
     const draw = (now) => {
       if (!inView || document.hidden) { previous = now; raf = requestAnimationFrame(draw); return; }
       const reduce = reduceQuery.matches;
-      const dt = Math.min(2, (now - (previous || now)) / 16.667);
+      const seconds = Math.min(0.05, Math.max(0, (now - (previous || now)) / 1000));
+      const dt = seconds * 60;
       previous = now;
       const time = now / 1000;
       const size = stage.clientWidth;
@@ -191,16 +241,25 @@ export default function SkillGlobe() {
         const d = Math.atan2(Math.sin(t.ay - m.ay), Math.cos(t.ay - m.ay));
         m.ay += d * (reduce ? 1 : 0.07);
         m.ax += (Math.max(-0.8, Math.min(0.8, t.ax)) - m.ax) * (reduce ? 1 : 0.07);
-      } else if (!m.drag && !reduce && !live.current.paused && act === null) {
-        if (act === null && !reduce) m.ay += m.vy * dt;
-        m.ax += m.vx;
-        m.vx *= 0.93;
-        m.vy += (0.0022 - m.vy) * 0.02;
-        m.ax += (-0.3 - m.ax) * 0.01; // settle back to a gentle tilt
+      } else if (!m.drag && !reduce && live.current.hovered == null) {
+        // Integrate exponential friction exactly so 60/120 Hz feel alike.
+        // Retain the flick direction even when returning to idle rotation.
+        const idle = 0.132 * m.direction;
+        const decay = Math.exp(-0.65 * seconds);
+        m.ay += idle * seconds + (m.vy - idle) * (1 - decay) / 0.65;
+        m.vy = idle + (m.vy - idle) * decay;
+
+      }
+      // Release vertical tilt back to center, independently of horizontal spin.
+      // A deliberate label hover/focus still pauses the globe.
+      if (!m.drag && !f && live.current.hovered == null) {
+        recenterTilt(m, seconds, reduce);
       }
       m.ax = Math.max(-0.9, Math.min(0.9, m.ax));
+      if (Math.abs(m.ax) >= 0.9) m.vx = 0;
+      m.ay = Math.atan2(Math.sin(m.ay), Math.cos(m.ay));
       const c = size / 2;
-      const R = size * (size < 450 ? 0.38 : 0.34);
+      const R = size * 0.35;
       /* ---- atmosphere ---- */
       const atmo = ctx.createRadialGradient(c, c, R * 0.96, c, c, R * 1.28);
       atmo.addColorStop(0, `rgba(${pal.atmo},${pal.atmoAlpha})`);
@@ -247,7 +306,7 @@ export default function SkillGlobe() {
         }
         const ca = categories[catOf(a)].color, cb = categories[catOf(b)].color;
         const visible = (p) => p[2] > -0.02;
-        const base = on ? (act !== null ? 0.9 : 0.55) : 0.07;
+        const base = on && act !== null ? 0.9 : 0.55;
         ctx.lineWidth = on && act !== null ? 2 : 1.3;
         for (let i = 1; i <= N; i++) {
           const p = seg[i], q = seg[i - 1];
@@ -270,13 +329,27 @@ export default function SkillGlobe() {
           }
         }
       });
+      const targets = spaceLabels(rp, chipRefs.current, c, R, size);
+      const blend = reduce || m.drag ? 1 : 1 - Math.exp(-seconds / 0.035);
+      const labels = targets.map((target, i) => {
+        const old = previousLabels[i];
+        if (!old || previousSize !== size || !old.visible) return target;
+        // Freeze the hit target while a skill is hovered or focused.
+        if (live.current.hovered != null && !m.drag) return old;
+        return { ...target,
+          x: old.x + (target.x - old.x) * blend,
+          y: old.y + (target.y - old.y) * blend,
+        };
+      });
+      previousLabels = labels;
+      previousSize = size;
       /* ---- pins + chips ---- */
       rp.forEach(([x, y, z], i) => {
         const el = chipRefs.current[i];
         const col = categories[catOf(i)].color;
         const X = c + x * R, Y = c + y * R;
-        const dimmed = (f && catOf(i) !== f) || (act !== null && act !== i &&
-          !links.some(([a, b]) => (a === act && b === i) || (b === act && a === i)));
+        const label = labels[i];
+        const dimmed = false; // Keep every visible skill readable during hover.
         const vis = Math.max(0, Math.min(1, (z - 0.02) / 0.22));
         if (z > 0) {
           // pulsing ring
@@ -294,11 +367,10 @@ export default function SkillGlobe() {
           // stem
           ctx.strokeStyle = rgba(col, 0.6 * vis * (dimmed ? 0.3 : 1));
           ctx.lineWidth = 1;
-          ctx.beginPath(); ctx.moveTo(X, Y - 3); ctx.lineTo(X, Y - 16); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(X, Y - 3); ctx.lineTo(label.x, label.y + label.height / 2); ctx.stroke();
         }
         if (!el) return;
-        const scale = 0.82 + z * 0.18;
-        el.style.transform = `translate(${X}px, ${Y - 16}px) translate(-50%, -100%) scale(${scale})`;
+        el.style.transform = `translate(${label.x}px, ${label.y}px) translate(-50%, -50%) scale(${label.scale})`;
         el.style.opacity = (vis * (dimmed ? 0.14 : 1)).toFixed(3);
         el.style.zIndex = String(Math.round(z * 100) + 100);
         el.style.pointerEvents = vis > 0.4 ? "auto" : "none";
@@ -307,24 +379,67 @@ export default function SkillGlobe() {
       raf = requestAnimationFrame(draw);
     };
     raf = requestAnimationFrame(draw);
-    /* ---- drag to spin ---- */
+    /* ---- drag to spin: recent movement determines release momentum ---- */
+    const sensitivity = () => 3.2 / Math.max(280, stage.clientWidth);
     const down = (e) => {
-      if (e.button !== 0 || e.target.closest("button")) return;
+      if (!e.isPrimary || e.button !== 0 || e.target.closest("button") || m.drag) return;
+      e.preventDefault();
       live.current.hovered = null; live.current.active = null; live.current.selected = null;
       setHovered(null); setSelected(null);
-      m.drag = { x: e.clientX, y: e.clientY };
+      m.vx = 0; m.vy = 0; m.hoverReady = false;
+      m.drag = { pointerId: e.pointerId, x: e.clientX, y: e.clientY,
+        samples: [{ x: e.clientX, y: e.clientY, time: e.timeStamp }] };
+      stage.dataset.dragging = "true";
       stage.setPointerCapture(e.pointerId);
       if (live.current.filter) { live.current.filter = null; setFilter(null); }
     };
     const move = (e) => {
-      if (!m.drag) return;
-      const dx = e.clientX - m.drag.x, dy = e.clientY - m.drag.y;
-      m.drag = { x: e.clientX, y: e.clientY };
-      m.ay += dx * 0.007; m.ax -= dy * 0.007;
-      m.vy = Math.max(-0.015, Math.min(0.015, dx * 0.0012));
-      m.vx = Math.max(-0.015, Math.min(0.015, -dy * 0.0012));
+      if (!m.drag) {
+        // A moving chip under a stationary cursor must not cancel a flick.
+        if (m.pointerX !== e.clientX || m.pointerY !== e.clientY) m.hoverReady = true;
+        m.pointerX = e.clientX; m.pointerY = e.clientY;
+        return;
+      }
+      if (e.pointerId !== m.drag.pointerId) return;
+      e.preventDefault();
+      const d = m.drag;
+      const events = e.getCoalescedEvents?.();
+      for (const point of events?.length ? events : [e]) {
+        const factor = sensitivity();
+        m.ay += (point.clientX - d.x) * factor;
+        m.ax = Math.max(-0.9, Math.min(0.9, m.ax - (point.clientY - d.y) * factor));
+        d.x = point.clientX; d.y = point.clientY;
+        d.samples.push({ x: d.x, y: d.y, time: point.timeStamp });
+        while (d.samples.length > 2 && d.samples[0].time < point.timeStamp - 80) d.samples.shift();
+      }
     };
-    const up = () => { m.drag = null; };
+    const up = (e) => {
+      if (!m.drag || (e?.pointerId != null && e.pointerId !== m.drag.pointerId)) return;
+      const { pointerId, samples } = m.drag;
+      const last = samples[samples.length - 1];
+      const first = samples[0];
+      const elapsed = (last.time - first.time) / 1000;
+      const released = e?.type === "pointerup";
+      if (released && elapsed > 0.008 && e.timeStamp - last.time < 100) {
+        const factor = sensitivity();
+        m.vy = Math.max(-6, Math.min(6, (last.x - first.x) * factor / elapsed));
+        // Vertical release returns to center rather than carrying tilt outward.
+        m.vx = 0;
+        if (Math.abs(m.vy) > 0.04) m.direction = Math.sign(m.vy);
+      } else {
+        m.vx = 0; m.vy = 0.132 * m.direction;
+      }
+      m.pointerX = e?.clientX ?? last.x; m.pointerY = e?.clientY ?? last.y;
+      m.hoverReady = false;
+      m.drag = null;
+      delete stage.dataset.dragging;
+      if (stage.hasPointerCapture(pointerId)) stage.releasePointerCapture(pointerId);
+    };
+    const preventSelection = (e) => e.preventDefault();
+    const cancelOnBlur = () => up();
+    stage.addEventListener("selectstart", preventSelection);
+    stage.addEventListener("dragstart", preventSelection);
+    window.addEventListener("blur", cancelOnBlur);
     stage.addEventListener("pointerdown", down);
     stage.addEventListener("pointermove", move);
     stage.addEventListener("pointerup", up);
@@ -332,6 +447,10 @@ export default function SkillGlobe() {
     stage.addEventListener("lostpointercapture", up);
     return () => {
       cancelAnimationFrame(raf);
+      up();
+      stage.removeEventListener("selectstart", preventSelection);
+      stage.removeEventListener("dragstart", preventSelection);
+      window.removeEventListener("blur", cancelOnBlur);
       observer.disconnect();
       stage.removeEventListener("pointerdown", down);
       stage.removeEventListener("pointermove", move);
@@ -340,59 +459,95 @@ export default function SkillGlobe() {
       stage.removeEventListener("lostpointercapture", up);
     };
   }, []);
-  const activeSkill = active !== null ? skills[active] : null;
-  const related = active !== null
-    ? links.filter(([a, b]) => a === active || b === active).map(([a, b]) => skills[a === active ? b : a].name)
-    : [];
-  const count = (key) => skills.filter((s) => s.cat === key).length;
+  // All panels share one grid cell. Hidden panels still reserve their natural
+  // height, so switching skills cannot resize the card or shift the page.
+  const infoPanels = [
+    { id: null, name: "My skills, connected",
+      description: "Hover or tap a skill to see what it works with. Drag the globe to explore more skills." },
+    ...skills.map((skill, i) => {
+      const related = links.filter(([a, b]) => a === i || b === i)
+        .map(([a, b]) => skills[a === i ? b : a].name);
+      return { ...skill, id: i,
+        description: related.length ? `Works with ${related.join(", ")}` : "Part of my development toolkit." };
+    }),
+  ];
   return (
     <div className="gs">
       <style>{`
-        #skills .gs-stage { isolation: isolate; }
+        #skills .gs {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-rows: auto;
+          gap: 16px;
+          align-items: start;
+          padding: 24px;
+        }
+        #skills .gs > .gs-info {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          overflow-anchor: none;
+          grid-column: 1; grid-row: 2;
+          width: 100%; max-width: 720px;
+          margin: 0 auto; padding: 20px 24px;
+          min-height: 100px; align-items: flex-start;
+          text-align: left; border-radius: 18px;
+        }
+        #skills .gs .gs-info-panel {
+          grid-area: 1 / 1;
+          display: flex;
+          align-items: flex-start;
+          gap: 14px;
+          min-width: 0;
+        }
+        #skills .gs .gs-info-panel > div { min-width: 0; }
+        #skills .gs .gs-info-panel p { overflow-wrap: anywhere; }
+        #skills .gs .gs-info-icon { flex-shrink: 0; }
+        #skills .gs .gs-stage {
+          grid-column: 1; grid-row: 1;
+
+          isolation: isolate;
+          width: 100%;
+          max-width: 560px;
+          height: auto;
+          aspect-ratio: 1;
+          margin-inline: auto;
+        }
+        #skills .gs .gs-stage,
+        #skills .gs .gs-stage * {
+          user-select: none;
+          -webkit-user-select: none;
+          -webkit-user-drag: none;
+        }
+        #skills .gs .gs-stage { touch-action: pan-y; cursor: grab; }
+        #skills .gs .gs-stage[data-dragging="true"] { cursor: grabbing; }
+        #skills .gs .gs-hint { pointer-events: none; }
         #skills .gs-chip {
           transition: none !important;
           animation: none !important;
           backface-visibility: hidden;
+          transform-origin: center;
+          border-width: 1px;
+          font-weight: 600;
         }
         #skills .gs-chip > * { pointer-events: none; }
-        #skills .gs-info { min-height: 140px; align-items: flex-start; }
-        @media (max-width: 600px) { #skills .gs-info { min-height: 190px; } }
+        @media (max-width: 800px) {
+          #skills .gs { grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 16px 8px; }
+          #skills .gs .gs-stage { grid-column: 1; grid-row: 1; }
+          #skills .gs > .gs-info { grid-column: 1; grid-row: 2; min-height: 100px; padding: 18px; }
+        }
       `}</style>
-      <div className="gs-filters" role="group" aria-label="Focus the globe on a category">
-        <button type="button" aria-pressed={filter === null} onClick={() => setFilter(null)}>
-          All <span>{skills.length}</span>
-        </button>
-        {Object.entries(categories).map(([key, c]) => (
-          <button key={key} type="button" aria-pressed={filter === key} style={{ "--dot": c.color }}
-                  onClick={() => setFilter(filter === key ? null : key)}>
-            <i /> {c.label} <span>{count(key)}</span>
-          </button>
-        ))}
-      </div>
-      <div className="gs-controls">
-        <button type="button" aria-pressed={paused} onClick={() => { const next = !paused; live.current.paused = next; setPaused(next); if (!next) { hoverSkill(null); setActive(null); } }}>{paused ? "Resume rotation" : "Pause rotation"}</button>
-        <label>Explore a skill
-          <select value={selected ?? ""} onChange={(event) => {
-            const i = event.target.value === "" ? null : Number(event.target.value);
-            setActive(i); setPaused(true); setFilter(i === null ? null : skills[i].cat);
-          }}>
-            <option value="">Choose a skill</option>
-            {skills.map((skill, i) => <option key={skill.name} value={i}>{skill.name}</option>)}
-          </select>
-        </label>
-      </div>
       <div className="gs-stage" ref={stageRef} tabIndex={0}
         onPointerLeave={() => hoverSkill(null)}
         role="group" aria-label="Interactive skill globe. Use left and right arrow keys to rotate."
         onKeyDown={(event) => {
           if (event.target !== event.currentTarget) return;
           if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
-          event.preventDefault(); setFilter(null); setPaused(true);
+          event.preventDefault(); setFilter(null); setActive(null); hoverSkill(null);
           const m = motion.current;
           if (event.key === "ArrowLeft") m.ay -= 0.2;
           if (event.key === "ArrowRight") m.ay += 0.2;
-          if (event.key === "ArrowUp") m.ax -= 0.15;
-          if (event.key === "ArrowDown") m.ax += 0.15;
+          if (event.key === "ArrowUp") { m.ax = Math.max(-0.9, m.ax - 0.15); m.vx = 0; }
+          if (event.key === "ArrowDown") { m.ax = Math.min(0.9, m.ax + 0.15); m.vx = 0; }
         }}>
         <canvas ref={canvasRef} className="gs-canvas" aria-hidden="true" />
         {skills.map((sk, i) => (
@@ -402,39 +557,48 @@ export default function SkillGlobe() {
             type="button"
             className={`gs-chip ${active === i ? "on" : ""}`}
             style={{ "--cat": categories[sk.cat].color }}
-            onPointerEnter={(event) => { if (event.pointerType === "mouse" && !motion.current.drag) hoverSkill(i); }}
+            onPointerEnter={(event) => { if (event.pointerType === "mouse" && !motion.current.drag && motion.current.hoverReady) hoverSkill(i); }}
+            onPointerMove={(event) => {
+              const m = motion.current;
+              if (event.pointerType === "mouse" && !m.drag &&
+                  (m.pointerX !== event.clientX || m.pointerY !== event.clientY)) {
+                m.hoverReady = true;
+                hoverSkill(i);
+              }
+            }}
             onPointerLeave={() => hoverSkill(null)}
             onFocus={() => hoverSkill(i)}
             onBlur={() => hoverSkill(null)}
-            onClick={() => { setActive(i); setPaused(true); }}
+            onClick={() => { setActive(selected === i ? null : i); }}
             aria-label={`${sk.name}, ${categories[sk.cat].label}`}
           >
             <span className="gs-chip-icon"><sk.Icon style={{ color: sk.color }} /></span>
             <span className="gs-chip-name">{sk.name}</span>
           </button>
         ))}
-        <p className="gs-hint"><FaHandPointer aria-hidden="true" /> Drag horizontally to spin · Arrow keys to rotate</p>
+        <p className="gs-hint"><FaHandPointer aria-hidden="true" /> Drag to spin </p>
       </div>
-      <div className="gs-info" aria-live="polite">
-        {activeSkill ? (
-          <>
-            <span className="gs-info-icon" style={{ "--cat": categories[activeSkill.cat].color }}>
-              <activeSkill.Icon style={{ color: activeSkill.color }} />
-            </span>
-            <div>
-              <strong>{activeSkill.name}</strong>
-              <small style={{ color: categories[activeSkill.cat].color }}>{categories[activeSkill.cat].label}</small>
-              <p>{related.length ? `Works with ${related.join(", ")}` : "Part of my development toolkit."}</p>
+      <div className="gs-info" aria-live="polite" aria-atomic="true">
+        {infoPanels.map((panel) => {
+          const visible = active === panel.id;
+          const Icon = panel.Icon;
+          return (
+            <div key={panel.id ?? "intro"} className="gs-info-panel"
+              style={{ visibility: visible ? "visible" : "hidden" }}
+              aria-hidden={!visible}>
+              {Icon && (
+                <span className="gs-info-icon" style={{ "--cat": categories[panel.cat].color }}>
+                  <Icon style={{ color: panel.color }} />
+                </span>
+              )}
+              <div>
+                <strong>{panel.name}</strong>
+                {panel.cat && <small style={{ color: categories[panel.cat].color }}>{categories[panel.cat].label}</small>}
+                <p>{panel.description}</p>
+              </div>
             </div>
-          </>
-        ) : (
-          <div>
-            <strong>{filter ? `${categories[filter].label} skills` : "My skills, connected"}</strong>
-            <p>{filter
-              ? skills.filter((s) => s.cat === filter).map((s) => s.name).join(", ")
-              : "Hover or tap a skill to see what it works with. Pick a category to bring it to the front."}</p>
-          </div>
-        )}
+          );
+        })}
       </div>
     </div>
   );

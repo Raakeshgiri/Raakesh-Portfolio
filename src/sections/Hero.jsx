@@ -1,4 +1,5 @@
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   HiOutlineArrowUpRight,
   HiOutlineArrowDown,
@@ -63,6 +64,72 @@ const socialLinks = [
     external: false,
   },
 ];
+
+// Keep the list outside the component so rerenders do not restart the timer.
+const defaultHeroRoles = [
+  "Flutter Developer",
+  "Software Developer",
+  "Mobile App Developer",
+  "Full Stack Developer",
+];
+
+const configuredHeroRoles = Array.isArray(portfolio.heroRoles)
+  ? portfolio.heroRoles
+      .filter((title) => typeof title === "string" && title.trim())
+      .map((title) => title.trim())
+  : [];
+
+// The general portfolio.role is never used by this animation.
+const heroRoles = configuredHeroRoles.length
+  ? [...new Set(configuredHeroRoles)]
+  : defaultHeroRoles;
+
+function AnimatedRole() {
+  const reduceMotion = useReducedMotion();
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    if (reduceMotion) return undefined;
+
+    let roleIndex = 0;
+    let characterIndex = 0;
+    let deleting = false;
+    let timer;
+
+    const tick = () => {
+      const role = heroRoles[roleIndex];
+      characterIndex += deleting ? -1 : 1;
+      setText(role.slice(0, characterIndex));
+
+      let delay = deleting ? 45 : 85;
+      if (!deleting && characterIndex === role.length) {
+        deleting = true;
+        delay = 1800;
+      } else if (deleting && characterIndex === 0) {
+        deleting = false;
+        roleIndex = (roleIndex + 1) % heroRoles.length;
+        delay = 300;
+      }
+      timer = window.setTimeout(tick, delay);
+    };
+
+    setText("");
+    timer = window.setTimeout(tick, 300);
+    return () => window.clearTimeout(timer);
+  }, [reduceMotion]);
+
+  return (
+    <h2 className="hero-role">
+      <span className="hero-role-accessible">{heroRoles.join(", ")}</span>
+      <span className="hero-role-visual" aria-hidden="true">
+        <span className="hero-role-text text-gradient">
+          {reduceMotion ? heroRoles[0] : text}
+        </span>
+        {!reduceMotion && <span className="hero-role-cursor" />}
+      </span>
+    </h2>
+  );
+}
 
 export default function Hero() {
   return (
@@ -215,16 +282,7 @@ export default function Hero() {
               {portfolio.name}
             </h1>
 
-            <h2
-              className="text-gradient"
-              style={{
-                fontSize: "clamp(20px, 2.6vw, 28px)",
-                fontWeight: 600,
-                marginTop: 6,
-              }}
-            >
-              {portfolio.role}
-            </h2>
+            <AnimatedRole />
 
             <p
               style={{

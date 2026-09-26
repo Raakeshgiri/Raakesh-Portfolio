@@ -3048,3 +3048,164 @@ a.contact-card:focus-visible { outline: 2px solid var(--accent-500); outline-off
 @media (prefers-reduced-motion: reduce) {
  #skills .skills-view-toggle button { transition: none; }
 }
+
+
+/* =========================================================
+   HERO — ROTATING TYPEWRITER ROLE
+========================================================= */
+#home .hero-role {
+  margin-top: 6px;
+  font-size: clamp(20px, 2.6vw, 28px);
+  font-weight: 600;
+  line-height: 1.4;
+  min-height: 1.4em;
+}
+
+#home .hero-role-visual {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.4em;
+  max-width: 100%;
+  white-space: nowrap;
+  vertical-align: top;
+}
+
+#home .hero-role-text {
+  display: inline-block;
+}
+
+#home .hero-role-cursor {
+  display: inline-block;
+  flex: 0 0 2px;
+  width: 2px;
+  height: 1em;
+  margin-left: 5px;
+  border-radius: 2px;
+  background: var(--accent-500);
+  animation: hero-role-blink 850ms step-end infinite;
+}
+
+#home .hero-role-accessible {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes hero-role-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@media (max-width: 380px) {
+  #home .hero-role { font-size: clamp(16px, 5vw, 19px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #home .hero-role-cursor { display: none; animation: none; }
+}
+
+
+/* =========================================================
+   PAGE SCROLLBAR — PURPLE / BLUE
+   Native scrolling with a rounded thumb and theme-aware track.
+========================================================= */
+html {
+  --page-scroll-track: #f2effa;
+  --page-scroll-thumb: #9270f5;
+  --page-scroll-start: #865cff;
+  --page-scroll-end: #71d2ed;
+  --page-scroll-hover-start: #7545ed;
+  --page-scroll-hover-end: #45bbde;
+
+  /* Standard fallback, including Firefox. */
+  scrollbar-width: thin;
+  scrollbar-color: var(--page-scroll-thumb) var(--page-scroll-track);
+}
+
+html[data-theme="dark"] {
+  --page-scroll-track: #171322;
+  --page-scroll-thumb: #a185fa;
+  --page-scroll-start: #9570ff;
+  --page-scroll-end: #64c9e5;
+  --page-scroll-hover-start: #b39aff;
+  --page-scroll-hover-end: #8ae4f5;
+}
+
+/* Use detailed native scrollbar styling where supported.
+   Reset the standard properties so they do not override the gradient. */
+@supports selector(::-webkit-scrollbar) {
+  html {
+    scrollbar-width: auto;
+    scrollbar-color: auto;
+  }
+
+  html::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  html::-webkit-scrollbar-track {
+    background: var(--page-scroll-track);
+  }
+
+  html::-webkit-scrollbar-thumb {
+    min-height: 48px;
+    border: 3px solid var(--page-scroll-track);
+    border-radius: 999px;
+    background: linear-gradient(
+      180deg,
+      var(--page-scroll-start) 0%,
+      var(--page-scroll-end) 100%
+    );
+    background-clip: padding-box;
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(
+      180deg,
+      var(--page-scroll-hover-start) 0%,
+      var(--page-scroll-hover-end) 100%
+    );
+    background-clip: padding-box;
+  }
+
+  html::-webkit-scrollbar-thumb:active {
+    background: var(--page-scroll-start);
+    background-clip: padding-box;
+  }
+
+  html::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  html::-webkit-scrollbar-corner {
+    background: var(--page-scroll-track);
+  }
+}
+
+/* Preserve system colors in Windows high-contrast mode. */
+@media (forced-colors: active) {
+  html {
+    --page-scroll-track: Canvas;
+    --page-scroll-thumb: ButtonText;
+    --page-scroll-start: ButtonText;
+    --page-scroll-end: ButtonText;
+    --page-scroll-hover-start: Highlight;
+    --page-scroll-hover-end: Highlight;
+    scrollbar-color: auto;
+  }
+
+  html::-webkit-scrollbar-thumb,
+  html::-webkit-scrollbar-thumb:hover {
+    background: ButtonText;
+    background-clip: padding-box;
+  }
+}
