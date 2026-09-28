@@ -1,10 +1,11 @@
+import styles from "./Projects.module.css";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { HiOutlineArrowRight } from "react-icons/hi2";
 
-import { portfolio } from "../data/portfolioData";
-import SectionTitle from "../components/SectionTitle";
-import ProjectModal from "../components/ProjectModal";
+import { portfolio } from "../../data/portfolioData";
+import SectionTitle from "../../components/SectionTitle/SectionTitle";
+import ProjectModal from "../../components/ProjectModal/ProjectModal";
 
 export default function Projects() {
   const [selectedProject, setSelectedProject] = useState(null);
@@ -23,7 +24,7 @@ export default function Projects() {
 
   return (
     <>
-      <section id="projects" className="section projects-section">
+      <section id="projects" className={`section ${styles["projects-section"]}`}>
         <div className="container">
 
           {/* Section Heading */}
@@ -35,11 +36,11 @@ export default function Projects() {
           />
 
           {/* Projects Grid */}
-          <div className="projects-grid">
+          <div className={styles["projects-grid"]}>
             {portfolio.projects.map((project, index) => (
               <motion.article
                 key={project.id}
-                className="project-card"
+                className={styles["project-card"]}
                 initial={{
                   opacity: 0,
                   y: 40,
@@ -64,44 +65,44 @@ export default function Projects() {
                 {/* Project Image */}
                 <button
                   type="button"
-                  className="project-card-image-wrapper"
+                  className={styles["project-card-image-wrapper"]}
                   onClick={() => openProject(project.id)}
                   aria-label={`View ${project.title}`}
                 >
                   <img
                     src={project.image}
                     alt={project.title}
-                    className="project-card-image"
+                    className={styles["project-card-image"]}
                   />
                 </button>
 
                 {/* Project Information */}
-                <div className="project-card-body">
+                <div className={styles["project-card-body"]}>
 
                   {/* Category */}
-                  <span className="project-card-category">
+                  <span className={styles["project-card-category"]}>
                     {project.category}
                   </span>
 
                   {/* Title */}
-                  <h3 className="project-card-title">
+                  <h3 className={styles["project-card-title"]}>
                     {project.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="project-card-description">
+                  <p className={styles["project-card-description"]}>
                     {project.description}
                   </p>
 
                   {/* Bottom Section */}
-                  <div className="project-card-footer">
+                  <div className={styles["project-card-footer"]}>
 
                     {/* Technology Pills */}
-                    <div className="project-card-tech">
+                    <div className={styles["project-card-tech"]}>
                       {project.technologies.map((technology) => (
                         <span
                           key={technology}
-                          className="project-tech-pill"
+                          className={styles["project-tech-pill"]}
                         >
                           {technology}
                         </span>
@@ -111,7 +112,7 @@ export default function Projects() {
                     {/* Arrow Button */}
                     <button
                       type="button"
-                      className="project-card-arrow"
+                      className={styles["project-card-arrow"]}
                       onClick={() => openProject(project.id)}
                       aria-label={`Open ${project.title}`}
                     >

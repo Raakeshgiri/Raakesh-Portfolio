@@ -1,0 +1,98 @@
+/* SkillGlobe styles */
+:global(#skills) .gs { border: 1px solid var(--surface-border); border-radius: 24px; background: var(--surface); padding: 24px; overflow: hidden; }
+:global(#skills) .gs-filters { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; }
+:global(#skills) .gs-filters button,
+:global(#skills) .gs-controls button,
+:global(#skills) .gs-controls select { border: 1px solid var(--surface-border); background: var(--surface); color: var(--text-primary); border-radius: 999px; padding: 9px 14px; font: inherit; font-size: 12px; min-height: 38px; }
+:global(#skills) .gs-filters button { display: inline-flex; align-items: center; gap: 7px; }
+:global(#skills) .gs-filters button[aria-pressed="true"] { background: var(--accent-gradient-soft,#8b5cf622); border-color: var(--accent-500); }
+:global(#skills) .gs-filters i { width: 7px; height: 7px; border-radius: 50%; background: var(--dot); }
+:global(#skills) .gs-filters button span { opacity: .6; }
+:global(#skills) .gs-controls { display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+:global(#skills) .gs-controls label { display: flex; align-items: center; gap: 8px; color: var(--text-secondary); font-size: 12px; }
+:global(#skills) .gs-controls select { max-width: 160px; border-radius: 9px; }
+:global(#skills) .gs-controls option { background: var(--bg); color: var(--text-primary); }
+:global(#skills) .gs-stage { position: relative; width: 100%; max-width: 760px; aspect-ratio: 1; margin: 0 auto; touch-action: pan-y; cursor: grab; }
+:global(#skills) .gs-stage:active { cursor: grabbing; }
+:global(#skills) .gs-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+:global(#skills) .gs-chip { position: absolute; top: 0; left: 0; display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 999px; border: 1px solid var(--cat); background: var(--bg,#fff); color: var(--text-primary); box-shadow: 0 4px 14px #00000015; font-size: 12px; white-space: nowrap; opacity: 0; will-change: transform; }
+:global(#skills) .gs-chip.on { box-shadow: 0 0 16px var(--cat); }
+:global(#skills) .gs-chip-icon { display: grid; place-items: center; font-size: 18px; font-weight: 700; }
+:global(#skills) .gs-chip-name { font-weight: 600; }
+:global(#skills) .gs-hint { position: absolute; bottom: 6px; left: 0; right: 0; text-align: center; color: var(--text-secondary); font-size: 12px; pointer-events: none; }
+:global(#skills) .gs-info { display: flex; gap: 14px; align-items: center; max-width: 720px; min-height: 100px; margin: 16px auto 0; border: 1px solid var(--surface-border); border-radius: 16px; padding: 20px; background: var(--surface); }
+:global(#skills) .gs-info strong { display: block; font-size: 16px; }
+:global(#skills) .gs-info small { display: block; margin-top: 5px; }
+:global(#skills) .gs-info p { margin-top: 7px; font-size: 13px; line-height: 1.8; color: var(--text-secondary); }
+:global(#skills) .gs-info-icon { display: grid; place-items: center; flex-shrink: 0; font-size: 28px; width: 46px; height: 46px; border-radius: 12px; border: 1px solid var(--cat); }
+:global(#skills) .gs button:focus-visible,
+:global(#skills) .gs select:focus-visible,
+:global(#skills) .gs-stage:focus-visible { outline: 2px solid var(--accent-500); outline-offset: 3px; }
+@media (max-width: 600px) {
+ :global(#skills) .gs { padding: 16px 8px; border-radius: 18px; }
+ :global(#skills) .gs-chip { font-size: 10px; padding: 5px 7px; gap: 5px; }
+ :global(#skills) .gs-chip-icon { font-size: 14px; }
+ :global(#skills) .gs-info { padding: 16px; }
+ :global(#skills) .gs-hint { font-size: 10px; }
+}
+:global(#skills) .gs {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          grid-template-rows: auto;
+          gap: 16px;
+          align-items: start;
+          padding: 24px;
+        }
+:global(#skills) .gs > .gs-info {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr);
+          overflow-anchor: none;
+          grid-column: 1; grid-row: 2;
+          width: 100%; max-width: 720px;
+          margin: 0 auto; padding: 20px 24px;
+          min-height: 100px; align-items: flex-start;
+          text-align: left; border-radius: 18px;
+        }
+:global(#skills) .gs .gs-info-panel {
+          grid-area: 1 / 1;
+          display: flex;
+          align-items: flex-start;
+          gap: 14px;
+          min-width: 0;
+        }
+:global(#skills) .gs .gs-info-panel > div { min-width: 0; }
+:global(#skills) .gs .gs-info-panel p { overflow-wrap: anywhere; }
+:global(#skills) .gs .gs-info-icon { flex-shrink: 0; }
+:global(#skills) .gs .gs-stage {
+          grid-column: 1; grid-row: 1;
+
+          isolation: isolate;
+          width: 100%;
+          max-width: 560px;
+          height: auto;
+          aspect-ratio: 1;
+          margin-inline: auto;
+        }
+:global(#skills) .gs .gs-stage,
+        :global(#skills) .gs .gs-stage * {
+          user-select: none;
+          -webkit-user-select: none;
+          -webkit-user-drag: none;
+        }
+:global(#skills) .gs .gs-stage { touch-action: pan-y; cursor: grab; }
+:global(#skills) .gs .gs-stage[data-dragging="true"] { cursor: grabbing; }
+:global(#skills) .gs .gs-hint { pointer-events: none; }
+:global(#skills) .gs-chip {
+          transition: none !important;
+          animation: none !important;
+          backface-visibility: hidden;
+          transform-origin: center;
+          border-width: 1px;
+          font-weight: 600;
+        }
+:global(#skills) .gs-chip > * { pointer-events: none; }
+@media (max-width: 800px) {
+          :global(#skills) .gs { grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 16px 8px; }
+          :global(#skills) .gs .gs-stage { grid-column: 1; grid-row: 1; }
+          :global(#skills) .gs > .gs-info { grid-column: 1; grid-row: 2; min-height: 100px; padding: 18px; }
+        }

@@ -1,3 +1,5 @@
+import { bindStyles } from "../../utils/bindStyles";
+import styles from "./Hero.module.css";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import {
@@ -6,7 +8,9 @@ import {
 } from "react-icons/hi2";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 
-import { portfolio } from "../data/portfolioData";
+import { portfolio } from "../../data/portfolioData";
+
+const classes = bindStyles(styles);
 
 function GmailIcon({ size = 21, ...props }) {
   return (
@@ -119,13 +123,13 @@ function AnimatedRole() {
   }, [reduceMotion]);
 
   return (
-    <h2 className="hero-role">
-      <span className="hero-role-accessible">{heroRoles.join(", ")}</span>
-      <span className="hero-role-visual" aria-hidden="true">
-        <span className="hero-role-text text-gradient">
+    <h2 className={styles["hero-role"]}>
+      <span className={styles["hero-role-accessible"]}>{heroRoles.join(", ")}</span>
+      <span className={styles["hero-role-visual"]} aria-hidden="true">
+        <span className={`${styles["hero-role-text"]} text-gradient`}>
           {reduceMotion ? heroRoles[0] : text}
         </span>
-        {!reduceMotion && <span className="hero-role-cursor" />}
+        {!reduceMotion && <span className={styles["hero-role-cursor"]} />}
       </span>
     </h2>
   );
@@ -135,131 +139,24 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="section"
-      style={{
-        paddingTop: 170,
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        overflow: "hidden",
-      }}
+      className={`section ${styles["hero-section"]}`}
     >
-      <style>{`
-        #home .hero-social-links {
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-          column-gap: 28px;
-          row-gap: 8px;
-          margin-top: 24px;
-        }
-
-        #home .hero-social-link {
-          display: inline-flex;
-          align-items: center;
-          gap: 9px;
-          min-height: 44px;
-          color: var(--text-secondary);
-          font-size: 15px;
-          font-weight: 500;
-          line-height: 1.4;
-          text-decoration: none;
-          border-radius: 6px;
-          transition: color 0.2s ease, transform 0.2s ease;
-        }
-
-        #home .hero-social-icon {
-          display: block;
-          flex-shrink: 0;
-        }
-
-        #home .hero-icon-github {
-          color: #181717;
-        }
-
-        [data-theme="dark"] #home .hero-icon-github {
-          color: #ffffff;
-        }
-
-        #home .hero-icon-linkedin {
-          color: #0a66c2;
-        }
-
-        #home .hero-social-link:focus-visible {
-          outline: 2px solid var(--accent-500);
-          outline-offset: 5px;
-        }
-
-        @media (hover: hover) and (pointer: fine) {
-          #home .hero-social-link:hover {
-            color: var(--accent-500);
-            transform: translateY(-3px);
-          }
-        }
-
-        @media (max-width: 480px) {
-          #home .hero-social-links {
-            column-gap: 20px;
-            margin-top: 20px;
-          }
-
-          #home .hero-social-link {
-            font-size: 14px;
-            gap: 7px;
-          }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          #home .hero-social-link {
-            transition: none;
-          }
-
-          #home .hero-social-link:hover {
-            transform: none;
-          }
-        }
-      `}</style>
 
       <div
-        className="blob"
+        className={`blob ${styles["hero-blob-left"]}`}
         aria-hidden="true"
-        style={{
-          width: 420,
-          height: 420,
-          background: "var(--blob-1)",
-          top: -80,
-          left: -120,
-        }}
       />
 
       <div
-        className="blob"
+        className={`blob ${styles["hero-blob-right"]}`}
         aria-hidden="true"
-        style={{
-          width: 340,
-          height: 340,
-          background: "var(--blob-2)",
-          top: 120,
-          right: -100,
-          animationDelay: "2s",
-        }}
       />
 
       <div
-        className="container"
-        style={{
-          position: "relative",
-          zIndex: 1,
-        }}
+        className={`container ${styles["hero-container"]}`}
       >
         <div
-          className="hero-grid"
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1.1fr 0.9fr",
-            gap: 40,
-            alignItems: "center",
-          }}
+          className={`${styles["hero-grid"]} ${styles["hero-grid-layout"]}`}
         >
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -274,10 +171,7 @@ export default function Hero() {
             </span>
 
             <h1
-              style={{
-                fontSize: "clamp(38px, 5.4vw, 62px)",
-                fontWeight: 700,
-              }}
+              className={styles["hero-name"]}
             >
               {portfolio.name}
             </h1>
@@ -285,25 +179,14 @@ export default function Hero() {
             <AnimatedRole />
 
             <p
-              style={{
-                color: "var(--text-secondary)",
-                marginTop: 20,
-                maxWidth: 460,
-                lineHeight: 1.7,
-                fontSize: 15.5,
-              }}
+              className={styles["hero-intro"]}
             >
               {portfolio.intro}
             </p>
 
             {/* Main action buttons */}
             <div
-              style={{
-                display: "flex",
-                gap: 14,
-                marginTop: 34,
-                flexWrap: "wrap",
-              }}
+              className={styles["hero-actions"]}
             >
               <a
                 href="#projects"
@@ -324,7 +207,7 @@ export default function Hero() {
 
             {/* Social links */}
             <nav
-              className="hero-social-links"
+              className={styles["hero-social-links"]}
               aria-label="Social and email links"
             >
               {socialLinks.map((social) => {
@@ -334,7 +217,7 @@ export default function Hero() {
                   <a
                     key={social.label}
                     href={social.href}
-                    className="hero-social-link"
+                    className={styles["hero-social-link"]}
                     target={social.external ? "_blank" : undefined}
                     rel={
                       social.external
@@ -348,7 +231,7 @@ export default function Hero() {
                     }
                   >
                     <Icon
-                      className={`hero-social-icon ${social.className}`}
+                      className={classes(`hero-social-icon ${social.className}`)}
                       size={21}
                       aria-hidden="true"
                     />
@@ -369,49 +252,20 @@ export default function Hero() {
               ease: "easeOut",
               delay: 0.15,
             }}
-            style={{
-              position: "relative",
-              display: "flex",
-              justifyContent: "center",
-            }}
+            className={styles["hero-portrait"]}
           >
             <div
-              className="glass"
-              style={{
-                width: "100%",
-                maxWidth: 340,
-                aspectRatio: "3/3.4",
-                overflow: "hidden",
-                position: "relative",
-                padding: 8,
-              }}
+              className={`glass ${styles["hero-photo-frame"]}`}
             >
               {portfolio.profileImage ? (
                 <img
                   src={portfolio.profileImage}
                   alt={portfolio.name}
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: 18,
-                    objectFit: "cover",
-                    display: "block",
-                  }}
+                  className={styles["hero-photo"]}
                 />
               ) : (
                 <div
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: 18,
-                    background: "var(--accent-gradient)",
-                    display: "grid",
-                    placeItems: "center",
-                    color: "#fff",
-                    fontFamily: "Sora",
-                    fontSize: 54,
-                    fontWeight: 700,
-                  }}
+                  className={styles["hero-photo-placeholder"]}
                 >
                   {portfolio.name.charAt(0)}
                 </div>
@@ -420,37 +274,22 @@ export default function Hero() {
 
             {/* Experience badge */}
             <motion.div
-              className="glass"
+              className={`glass ${styles["hero-badge"]}`}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{
                 delay: 0.6,
                 duration: 0.6,
               }}
-              style={{
-                position: "absolute",
-                top: 10,
-                right: -10,
-                padding: "12px 16px",
-                textAlign: "center",
-              }}
             >
               <div
-                className="text-gradient"
-                style={{
-                  fontFamily: "Sora",
-                  fontWeight: 700,
-                  fontSize: 20,
-                }}
+                className={`text-gradient ${styles["hero-stat-value"]}`}
               >
                 {portfolio.stats[0].value}
               </div>
 
               <div
-                style={{
-                  fontSize: 11,
-                  color: "var(--text-secondary)",
-                }}
+                className={styles["hero-stat-label"]}
               >
                 {portfolio.stats[0].label}
               </div>
@@ -462,13 +301,7 @@ export default function Hero() {
       <motion.a
         href="#about"
         aria-label="Scroll to about section"
-        style={{
-          position: "absolute",
-          bottom: 30,
-          left: "50%",
-          transform: "translateX(-50%)",
-          color: "var(--text-muted)",
-        }}
+        className={styles["hero-scroll-link"]}
         animate={{ y: [0, 8, 0] }}
         transition={{
           repeat: Infinity,

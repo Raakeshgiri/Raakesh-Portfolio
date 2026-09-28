@@ -1,3 +1,4 @@
+import styles from "./ProjectModal.module.css";
 import { useEffect } from "react";
 import {
   AnimatePresence,
@@ -57,7 +58,7 @@ export default function ProjectModal({
     <AnimatePresence>
       {project && (
         <motion.div
-          className="project-modal-overlay"
+          className={styles["project-modal-overlay"]}
           initial={{
             opacity: 0,
           }}
@@ -80,7 +81,7 @@ export default function ProjectModal({
           }}
         >
           <motion.div
-            className="project-modal"
+            className={styles["project-modal"]}
             initial={{
               opacity: 0,
               y: 60,
@@ -106,7 +107,7 @@ export default function ProjectModal({
 
             <button
               type="button"
-              className="project-modal-close"
+              className={styles["project-modal-close"]}
               onClick={onClose}
               aria-label="Close project details"
             >
@@ -116,7 +117,7 @@ export default function ProjectModal({
             {/* Header */}
 
             <motion.div
-              className="project-modal-header"
+              className={styles["project-modal-header"]}
               initial={{
                 opacity: 0,
                 y: 20,
@@ -129,7 +130,7 @@ export default function ProjectModal({
                 delay: 0.1,
               }}
             >
-              <span className="project-modal-label">
+              <span className={styles["project-modal-label"]}>
                 {project.label}
               </span>
 
@@ -141,7 +142,7 @@ export default function ProjectModal({
             {/* Project Info */}
 
             <motion.div
-              className="project-info-card"
+              className={styles["project-info-card"]}
               initial={{
                 opacity: 0,
                 y: 25,
@@ -154,25 +155,25 @@ export default function ProjectModal({
                 delay: 0.18,
               }}
             >
-              <span className="project-year">
+              <span className={styles["project-year"]}>
                 {project.year}
               </span>
 
-              <p className="project-long-description">
+              <p className={styles["project-long-description"]}>
                 {project.description}
               </p>
 
-              <div className="project-technologies">
-                <span className="project-tech-title">
+              <div className={styles["project-technologies"]}>
+                <span className={styles["project-tech-title"]}>
                   TECHNOLOGIES
                 </span>
 
-                <div className="project-tech-list">
+                <div className={styles["project-tech-list"]}>
                   {project.technologies.map(
                     (technology) => (
                       <span
                         key={technology}
-                        className="project-tech-chip"
+                        className={styles["project-tech-chip"]}
                       >
                         {technology}
                       </span>
@@ -186,7 +187,7 @@ export default function ProjectModal({
 
             {project.links?.length > 0 && (
               <motion.div
-                className="project-links-section"
+                className={styles["project-links-section"]}
                 initial={{
                   opacity: 0,
                   y: 25,
@@ -199,7 +200,7 @@ export default function ProjectModal({
                   delay: 0.26,
                 }}
               >
-                <div className="project-links-heading">
+                <div className={styles["project-links-heading"]}>
                   <span>
                     Links
                   </span>
@@ -207,13 +208,13 @@ export default function ProjectModal({
                   <HiOutlineLink />
                 </div>
 
-                <div className="project-links-list">
+                <div className={styles["project-links-list"]}>
                   {project.links.map(
                     (link) => (
                       <a
                         key={link.label}
                         href={link.url}
-                        className="project-link-item"
+                        className={styles["project-link-item"]}
                         target={
                           link.url !== "#"
                             ? "_blank"
@@ -249,7 +250,7 @@ export default function ProjectModal({
             {project.screenshots?.length >
               0 && (
               <motion.div
-                className="project-screenshots-section"
+                className={styles["project-screenshots-section"]}
                 initial={{
                   opacity: 0,
                 }}
@@ -260,12 +261,12 @@ export default function ProjectModal({
                   delay: 0.3,
                 }}
               >
-                <div className="project-screenshots-heading">
+                <div className={styles["project-screenshots-heading"]}>
                   <span>
                     Project Screens
                   </span>
 
-                  <span className="project-screenshots-count">
+                  <span className={styles["project-screenshots-count"]}>
                     {
                       project
                         .screenshots
@@ -277,8 +278,8 @@ export default function ProjectModal({
                 <div
                   className={
                     isMobileProject
-                      ? "project-screenshots mobile-screenshots"
-                      : "project-screenshots web-screenshots"
+                      ? styles["mobile-screenshots"]
+                      : styles["web-screenshots"]
                   }
                 >
                   {project.screenshots.map(
@@ -290,8 +291,8 @@ export default function ProjectModal({
                         key={`${screenshot}-${index}`}
                         className={
                           isMobileProject
-                            ? "mobile-screenshot-item"
-                            : "web-screenshot-item"
+                            ? styles["mobile-screenshot-item"]
+                            : styles["web-screenshot-item"]
                         }
                         initial={{
                           opacity: 0,
@@ -310,7 +311,7 @@ export default function ProjectModal({
                         }}
                       >
                         {isMobileProject ? (
-                          <div className="mobile-device-frame">
+                          <div className={styles["mobile-device-frame"]}>
                             <img
                               src={
                                 screenshot
@@ -319,12 +320,12 @@ export default function ProjectModal({
                                 index +
                                 1
                               }`}
-                              className="mobile-project-screenshot"
+                              className={styles["mobile-project-screenshot"]}
                               loading="lazy"
                             />
                           </div>
                         ) : (
-                          <div className="web-image-frame">
+                          <div className={styles["web-image-frame"]}>
                             <img
                               src={
                                 screenshot
@@ -333,7 +334,7 @@ export default function ProjectModal({
                                 index +
                                 1
                               }`}
-                              className="web-project-screenshot"
+                              className={styles["web-project-screenshot"]}
                               loading="lazy"
                             />
                           </div>
@@ -347,10 +348,10 @@ export default function ProjectModal({
 
             {/* Bottom Close */}
 
-            <div className="project-modal-bottom">
+            <div className={styles["project-modal-bottom"]}>
               <button
                 type="button"
-                className="project-bottom-close"
+                className={styles["project-bottom-close"]}
                 onClick={onClose}
               >
                 Close Project

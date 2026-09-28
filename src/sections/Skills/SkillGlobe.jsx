@@ -1,8 +1,12 @@
+import { bindStyles } from "../../utils/bindStyles";
+import styles from "./SkillGlobe.module.css";
 import { useEffect, useRef, useState } from "react";
-import { portfolio } from "../data/portfolioData";
+import { portfolio } from "../../data/portfolioData";
 import { SiFlutter, SiJavascript, SiSpringboot, SiMysql, SiHtml5, SiGit, SiGithub, SiPostman, SiVercel } from "react-icons/si";
 import { FaJava, FaReact, FaCss3Alt, FaHandPointer } from "react-icons/fa";
 import { VscVscode } from "react-icons/vsc";
+
+const classes = bindStyles(styles);
 const XdIcon = (props) => <span {...props}>Xd</span>;
 const categories = {
  mobile: { label: "Mobile", color: "#38bdf8" },
@@ -472,71 +476,8 @@ export default function SkillGlobe() {
     }),
   ];
   return (
-    <div className="gs">
-      <style>{`
-        #skills .gs {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr);
-          grid-template-rows: auto;
-          gap: 16px;
-          align-items: start;
-          padding: 24px;
-        }
-        #skills .gs > .gs-info {
-          display: grid;
-          grid-template-columns: minmax(0, 1fr);
-          overflow-anchor: none;
-          grid-column: 1; grid-row: 2;
-          width: 100%; max-width: 720px;
-          margin: 0 auto; padding: 20px 24px;
-          min-height: 100px; align-items: flex-start;
-          text-align: left; border-radius: 18px;
-        }
-        #skills .gs .gs-info-panel {
-          grid-area: 1 / 1;
-          display: flex;
-          align-items: flex-start;
-          gap: 14px;
-          min-width: 0;
-        }
-        #skills .gs .gs-info-panel > div { min-width: 0; }
-        #skills .gs .gs-info-panel p { overflow-wrap: anywhere; }
-        #skills .gs .gs-info-icon { flex-shrink: 0; }
-        #skills .gs .gs-stage {
-          grid-column: 1; grid-row: 1;
-
-          isolation: isolate;
-          width: 100%;
-          max-width: 560px;
-          height: auto;
-          aspect-ratio: 1;
-          margin-inline: auto;
-        }
-        #skills .gs .gs-stage,
-        #skills .gs .gs-stage * {
-          user-select: none;
-          -webkit-user-select: none;
-          -webkit-user-drag: none;
-        }
-        #skills .gs .gs-stage { touch-action: pan-y; cursor: grab; }
-        #skills .gs .gs-stage[data-dragging="true"] { cursor: grabbing; }
-        #skills .gs .gs-hint { pointer-events: none; }
-        #skills .gs-chip {
-          transition: none !important;
-          animation: none !important;
-          backface-visibility: hidden;
-          transform-origin: center;
-          border-width: 1px;
-          font-weight: 600;
-        }
-        #skills .gs-chip > * { pointer-events: none; }
-        @media (max-width: 800px) {
-          #skills .gs { grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 16px 8px; }
-          #skills .gs .gs-stage { grid-column: 1; grid-row: 1; }
-          #skills .gs > .gs-info { grid-column: 1; grid-row: 2; min-height: 100px; padding: 18px; }
-        }
-      `}</style>
-      <div className="gs-stage" ref={stageRef} tabIndex={0}
+    <div className={styles["gs"]}>
+      <div className={styles["gs-stage"]} ref={stageRef} tabIndex={0}
         onPointerLeave={() => hoverSkill(null)}
         role="group" aria-label="Interactive skill globe. Use left and right arrow keys to rotate."
         onKeyDown={(event) => {
@@ -549,13 +490,13 @@ export default function SkillGlobe() {
           if (event.key === "ArrowUp") { m.ax = Math.max(-0.9, m.ax - 0.15); m.vx = 0; }
           if (event.key === "ArrowDown") { m.ax = Math.min(0.9, m.ax + 0.15); m.vx = 0; }
         }}>
-        <canvas ref={canvasRef} className="gs-canvas" aria-hidden="true" />
+        <canvas ref={canvasRef} className={styles["gs-canvas"]} aria-hidden="true" />
         {skills.map((sk, i) => (
           <button
             key={sk.name}
             ref={(el) => { chipRefs.current[i] = el; }}
             type="button"
-            className={`gs-chip ${active === i ? "on" : ""}`}
+            className={classes(`gs-chip ${active === i ? "on" : ""}`)}
             style={{ "--cat": categories[sk.cat].color }}
             onPointerEnter={(event) => { if (event.pointerType === "mouse" && !motion.current.drag && motion.current.hoverReady) hoverSkill(i); }}
             onPointerMove={(event) => {
@@ -572,22 +513,22 @@ export default function SkillGlobe() {
             onClick={() => { setActive(selected === i ? null : i); }}
             aria-label={`${sk.name}, ${categories[sk.cat].label}`}
           >
-            <span className="gs-chip-icon"><sk.Icon style={{ color: sk.color }} /></span>
-            <span className="gs-chip-name">{sk.name}</span>
+            <span className={styles["gs-chip-icon"]}><sk.Icon style={{ color: sk.color }} /></span>
+            <span className={styles["gs-chip-name"]}>{sk.name}</span>
           </button>
         ))}
-        <p className="gs-hint"><FaHandPointer aria-hidden="true" /> Drag to spin </p>
+        <p className={styles["gs-hint"]}><FaHandPointer aria-hidden="true" /> Drag to spin </p>
       </div>
-      <div className="gs-info" aria-live="polite" aria-atomic="true">
+      <div className={styles["gs-info"]} aria-live="polite" aria-atomic="true">
         {infoPanels.map((panel) => {
           const visible = active === panel.id;
           const Icon = panel.Icon;
           return (
-            <div key={panel.id ?? "intro"} className="gs-info-panel"
+            <div key={panel.id ?? "intro"} className={styles["gs-info-panel"]}
               style={{ visibility: visible ? "visible" : "hidden" }}
               aria-hidden={!visible}>
               {Icon && (
-                <span className="gs-info-icon" style={{ "--cat": categories[panel.cat].color }}>
+                <span className={styles["gs-info-icon"]} style={{ "--cat": categories[panel.cat].color }}>
                   <Icon style={{ color: panel.color }} />
                 </span>
               )}

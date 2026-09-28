@@ -1,3 +1,4 @@
+import styles from "./About.module.css";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   HiOutlineAcademicCap,
@@ -8,7 +9,7 @@ import {
   HiOutlineArrowRight,
 } from "react-icons/hi2";
 
-import { portfolio } from "../data/portfolioData";
+import { portfolio } from "../../data/portfolioData";
 
 const snapshotIcons = {
   training: HiOutlineAcademicCap,
@@ -49,39 +50,24 @@ export default function About() {
   return (
     <section
       id="about"
-      className="section about-section"
+      className={`section ${styles["about-section"]}`}
       aria-labelledby="about-title"
     >
       <div className="container">
         {/* Section header */}
         <motion.div
-          className="about-heading"
-          style={{
-            maxWidth: 1000,
-            textAlign: "center",
-          }}
+          className={`${styles["about-heading"]} ${styles["about-heading-layout"]}`}
           {...reveal()}
         >
           <span
-            className="eyebrow"
-            style={{
-              justifyContent: "center",
-              marginBottom: 16,
-            }}
+            className={`eyebrow ${styles["about-eyebrow"]}`}
           >
             ABOUT ME
           </span>
 
           <h2
             id="about-title"
-            style={{
-              fontSize: "clamp(30px, 4vw, 46px)",
-              fontWeight: 700,
-              lineHeight: 1.2,
-              letterSpacing: "-0.02em",
-              marginBottom: 14,
-              textWrap: "balance",
-            }}
+            className={styles["about-title"]}
           >
             Here is What{" "}
             <span className="text-gradient">
@@ -90,21 +76,16 @@ export default function About() {
           </h2>
 
           <p
-            style={{
-              color: "var(--text-secondary)",
-              fontSize: "clamp(15px, 1.6vw, 18px)",
-              lineHeight: 1.75,
-              margin: 0,
-            }}
+            className={styles["about-subtitle"]}
           >
             {details.subtitle}
           </p>
         </motion.div>
 
         {/* About content */}
-        <div className="about-content-grid">
+        <div className={styles["about-content-grid"]}>
           <motion.div
-            className="about-biography"
+            className={styles["about-biography"]}
             {...reveal(0.08)}
           >
             {details.paragraphs.map((paragraph, index) => (
@@ -112,7 +93,7 @@ export default function About() {
             ))}
 
             <a
-              className="about-action"
+              className={styles["about-action"]}
               href={details.cta.href}
             >
               {details.cta.label}
@@ -126,7 +107,7 @@ export default function About() {
 
           {/* Developer snapshot */}
           <motion.aside
-            className="about-snapshot"
+            className={styles["about-snapshot"]}
             aria-labelledby="snapshot-title"
             {...reveal(0.16)}
           >
@@ -134,7 +115,7 @@ export default function About() {
               Developer Snapshot
             </h3>
 
-            <dl className="about-snapshot-list">
+            <dl className={styles["about-snapshot-list"]}>
               {details.snapshot.map((item) => {
                 const Icon =
                   snapshotIcons[item.id] ||
@@ -142,17 +123,17 @@ export default function About() {
 
                 return (
                   <div
-                    className="about-snapshot-row"
+                    className={styles["about-snapshot-row"]}
                     key={item.id}
                   >
                     <span
-                      className="about-snapshot-icon"
+                      className={styles["about-snapshot-icon"]}
                       aria-hidden="true"
                     >
                       <Icon size={25} />
                     </span>
 
-                    <div className="about-snapshot-copy">
+                    <div className={styles["about-snapshot-copy"]}>
                       <dt>{item.label}</dt>
 
                       <dd>
@@ -162,7 +143,7 @@ export default function About() {
                       </dd>
 
                       {item.detail && (
-                        <dd className="about-snapshot-detail">
+                        <dd className={styles["about-snapshot-detail"]}>
                           {item.detail}
                         </dd>
                       )}

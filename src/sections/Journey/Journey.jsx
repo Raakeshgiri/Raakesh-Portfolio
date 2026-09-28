@@ -1,3 +1,4 @@
+import styles from "./Journey.module.css";
 import { motion, useReducedMotion } from "framer-motion";
 import {
   HiOutlineAcademicCap,
@@ -7,7 +8,7 @@ import {
   HiOutlineRocketLaunch,
 } from "react-icons/hi2";
 
-import { portfolio } from "../data/portfolioData";
+import { portfolio } from "../../data/portfolioData";
 
 const milestoneIcons = {
   education: HiOutlineAcademicCap,
@@ -16,124 +17,6 @@ const milestoneIcons = {
   mobile: HiOutlineDevicePhoneMobile,
   future: HiOutlineRocketLaunch,
 };
-
-const journeyStyles = `
-  #journey .journey-container {
-    width: 100%;
-    max-width: 1600px;
-    margin-inline: auto;
-    padding-inline: clamp(20px, 3vw, 48px);
-  }
-
-  #journey .journey-timeline {
-    width: 100%;
-    padding: 0;
-    list-style: none;
-  }
-
-  @media (min-width: 1200px) {
-    #journey .journey-timeline {
-      display: grid;
-      grid-template-columns:
-        repeat(var(--journey-columns), minmax(0, 1fr));
-      align-items: stretch;
-      gap: 22px;
-      max-width: none;
-      margin: 0 auto;
-    }
-
-    #journey .journey-step {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
-    #journey .journey-step:not(:last-child)::after {
-      content: "";
-      position: absolute;
-      top: 80px;
-      left: 50%;
-      bottom: auto;
-      width: calc(100% + 22px);
-      height: 0;
-      border-left: none;
-      border-top: 2px dashed var(--accent-300, #c4b5fd);
-      z-index: -1;
-    }
-
-    #journey .journey-marker {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex-shrink: 0;
-    }
-
-    #journey .journey-year {
-      line-height: 28px;
-      margin-bottom: 12px;
-    }
-
-    #journey .journey-icon {
-      width: 80px;
-      height: 80px;
-      box-sizing: border-box;
-      flex-shrink: 0;
-    }
-
-    #journey .journey-stem {
-      display: block;
-      height: 26px;
-    }
-
-    #journey .journey-card {
-      flex: 1;
-      width: 100%;
-      min-width: 0;
-      padding: 26px 20px;
-    }
-  }
-
-  #journey .journey-card h3,
-  #journey .journey-organization,
-  #journey .journey-highlights li {
-    overflow-wrap: break-word;
-  }
-
-  @media (max-width: 1199px) {
-    #journey .journey-timeline {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      max-width: 760px;
-      margin-inline: auto;
-      gap: 28px;
-    }
-
-    #journey .journey-step {
-      display: grid;
-      grid-template-columns: 100px minmax(0, 1fr);
-      align-items: start;
-      gap: 22px;
-      min-width: 0;
-    }
-
-    #journey .journey-card {
-      min-width: 0;
-      width: 100%;
-    }
-  }
-
-  @media (max-width: 480px) {
-    #journey .journey-step {
-      grid-template-columns: 66px minmax(0, 1fr);
-      gap: 14px;
-    }
-
-    #journey .journey-card {
-      padding: 20px 16px;
-    }
-  }
-`;
 
 export default function Journey() {
   const reduceMotion = useReducedMotion();
@@ -147,14 +30,13 @@ export default function Journey() {
   return (
     <section
       id="journey"
-      className="section journey-section"
+      className={`section ${styles["journey-section"]}`}
       aria-labelledby="journey-title"
     >
-      <style>{journeyStyles}</style>
 
-      <div className="container journey-container">
+      <div className={`container ${styles["journey-container"]}`}>
         <motion.div
-          className="journey-heading"
+          className={styles["journey-heading"]}
           initial={
             reduceMotion
               ? false
@@ -186,7 +68,7 @@ export default function Journey() {
         </motion.div>
 
         <ol
-          className="journey-timeline"
+          className={styles["journey-timeline"]}
           style={{
             "--journey-columns": Math.max(milestones.length, 1),
           }}
@@ -198,29 +80,29 @@ export default function Journey() {
 
             return (
               <li
-                className="journey-step"
+                className={styles["journey-step"]}
                 key={milestone.id}
               >
-                <div className="journey-marker">
-                  <span className="journey-year">
+                <div className={styles["journey-marker"]}>
+                  <span className={styles["journey-year"]}>
                     {milestone.year}
                   </span>
 
                   <span
-                    className="journey-icon"
+                    className={styles["journey-icon"]}
                     aria-hidden="true"
                   >
                     <Icon size={30} />
                   </span>
 
                   <span
-                    className="journey-stem"
+                    className={styles["journey-stem"]}
                     aria-hidden="true"
                   />
                 </div>
 
                 <motion.article
-                  className="journey-card"
+                  className={styles["journey-card"]}
                   initial={
                     reduceMotion
                       ? false
@@ -245,18 +127,18 @@ export default function Journey() {
                   <h3>{milestone.title}</h3>
 
                   {milestone.organization && (
-                    <p className="journey-organization">
+                    <p className={styles["journey-organization"]}>
                       {milestone.organization}
                     </p>
                   )}
 
                   {milestone.period && (
-                    <p className="journey-period">
+                    <p className={styles["journey-period"]}>
                       {milestone.period}
                     </p>
                   )}
 
-                  <ul className="journey-highlights">
+                  <ul className={styles["journey-highlights"]}>
                     {milestone.highlights.map((highlight) => (
                       <li key={highlight}>{highlight}</li>
                     ))}

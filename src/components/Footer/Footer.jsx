@@ -1,25 +1,19 @@
+import styles from "./Footer.module.css";
 import { HiOutlineMail } from "react-icons/hi";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
-import { portfolio } from "../data/portfolioData";
+import { portfolio } from "../../data/portfolioData";
 
 export default function Footer() {
   return (
-    <footer style={{ padding: "40px 0", borderTop: "1px solid var(--surface-border)" }}>
+    <footer className={styles["footer"]}>
       <div
-        className="container"
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 16,
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
+        className={`container ${styles["footer-content"]}`}
       >
-        <p style={{ color: "var(--text-muted)", fontSize: 14 }}>
+        <p className={styles["footer-copyright"]}>
           © {new Date().getFullYear()} {portfolio.name}. All rights reserved.
         </p>
 
-        <div style={{ display: "flex", gap: 12 }}>
+        <div className={styles["footer-socials"]}>
           {[
             { icon: <FaGithub size={15} />, href: "https://github.com/Raakeshgiri" },
             { icon: <FaLinkedin size={15} />, href: "https://www.linkedin.com/in/raakesh-ga/" },
@@ -30,17 +24,7 @@ export default function Footer() {
       href={social.href}
       target="_blank"
       rel="noopener noreferrer"
-      className="icon-btn"
-      style={{
-        width: 36,
-        height: 36,
-        borderRadius: "50%",
-        display: "grid",
-        placeItems: "center",
-        background: "var(--surface)",
-        border: "1px solid var(--surface-border)",
-        color: "var(--text-secondary)",
-      }}
+      className={`icon-btn ${styles["footer-social-link"]}`}
     >
       {social.icon}
     </a>

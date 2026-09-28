@@ -1,0 +1,28 @@
+/* SectionTitle styles */
+.section-head {
+  max-width: 620px;
+
+  margin:
+    0 auto 56px;
+
+  text-align: center;
+}
+
+.section-head h2 {
+  font-size:
+    clamp(
+      28px,
+      4vw,
+      38px
+    );
+
+  font-weight: 700;
+}
+
+/* Component layout */
+
+.section-subtitle {
+  color: var(--text-secondary);
+  margin-top: 12px;
+  font-size: 15.5px;
+}
