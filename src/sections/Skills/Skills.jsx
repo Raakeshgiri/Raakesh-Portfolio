@@ -1,6 +1,6 @@
 import { bindStyles } from "../../utils/bindStyles";
 import styles from "./Skills.module.css";
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { portfolio } from "../../data/portfolioData";
 import SectionTitle from "../../components/SectionTitle/SectionTitle";
@@ -10,6 +10,32 @@ import { FaJava, FaReact, FaCss3Alt, FaGlobe, FaTh } from "react-icons/fa";
 import { VscVscode } from "react-icons/vsc";
 
 const classes = bindStyles(styles);
+
+const skillCardEntrance = {
+  hidden: ({ x = 0, y = 0, index = 0 } = {}) => ({
+    opacity: 0,
+    x,
+    y,
+    scale: 0.7,
+    rotate: index % 2 === 0 ? -12 : 12,
+  }),
+  visible: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    scale: 1,
+    rotate: 0,
+    transition: {
+      opacity: { duration: 0.2 },
+      default: { type: "spring", stiffness: 110, damping: 20, mass: 0.8 },
+    },
+  },
+};
+
+const staticSkillCard = {
+  hidden: { opacity: 1, x: 0, y: 0, scale: 1, rotate: 0 },
+  visible: { opacity: 1, x: 0, y: 0, scale: 1, rotate: 0, transition: { duration: 0 } },
+};
 
 const skillIcons = {
   Flutter: SiFlutter, Java: FaJava, JavaScript: SiJavascript,
@@ -27,6 +53,26 @@ const skillClasses = {
 export default function Skills() {
   const [view, setView] = useState("skills");
   const reduceMotion = useReducedMotion();
+  const gridRef = useRef(null);
+  const [origins, setOrigins] = useState(null);
+
+  useLayoutEffect(() => {
+    const grid = gridRef.current;
+    if (!grid || reduceMotion) return;
+
+    // Measure actual grid positions so the deal adapts to every breakpoint.
+    const measure = () => {
+      setOrigins(Array.from(grid.children, (card, index) => ({
+        x: grid.clientWidth / 2 - card.offsetLeft - card.offsetWidth / 2,
+        y: Math.min(grid.clientHeight / 2, 180) - card.offsetTop - card.offsetHeight / 2,
+        index,
+      })));
+    };
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(grid);
+    return () => observer.disconnect();
+  }, [view, reduceMotion]);
   return (
     <section id="skills" className={`section ${styles["skills-section"]}`}>
       <div className={`${styles["skills-blob"]} ${styles["skills-blob-left"]}`} aria-hidden="true" />
@@ -47,15 +93,15 @@ export default function Skills() {
         </div>
         <div id="skills-view-panel">
           {view === "globe" ? <SkillGlobe /> : (
-            <motion.div className={styles["skills-card-grid"]} initial={reduceMotion ? false : "hidden"}
+            <motion.div ref={gridRef} className={styles["skills-card-grid"]} initial={reduceMotion ? false : "hidden"}
               whileInView="visible" viewport={{ once: true, amount: 0.15 }}
-              variants={{ hidden: {}, visible: { transition: { staggerChildren: reduceMotion ? 0 : 0.055 } } }}>
-              {portfolio.skills.map((skill) => {
+              variants={{ hidden: {}, visible: { transition: { staggerChildren: reduceMotion ? 0 : 0.065 } } }}>
+              {portfolio.skills.map((skill, index) => {
                 const Icon = skillIcons[skill.name];
                 return (
-                  <motion.div key={skill.name} className={styles["skill-card"]}
-                    variants={{ hidden: { opacity: 0, y: 24, scale: 0.96 }, visible: { opacity: 1, y: 0, scale: 1, transition: { duration: reduceMotion ? 0 : 0.5, ease: [0.22, 1, 0.36, 1] } } }}
-                    whileHover={reduceMotion ? undefined : { y: -7, transition: { duration: 0.25 } }}>
+                  <motion.div key={`${skill.name}-${origins ? "ready" : "measure"}`} className={styles["skill-card"]}
+                    custom={origins?.[index]}
+                    variants={reduceMotion ? staticSkillCard : skillCardEntrance}>
                     <div className={classes(`skill-icon-box ${skillClasses[skill.name] || ""}`)} aria-hidden="true">
                       {skill.name === "Adobe XD" ? <span className={styles["adobe-xd-icon"]}>Xd</span> : Icon && <Icon className={styles["skill-icon"]} />}
                     </div>

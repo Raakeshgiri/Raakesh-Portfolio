@@ -3,19 +3,16 @@ import styles from "./Navbar.module.css";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  HiOutlineSun,
-  HiOutlineMoon,
   HiOutlineMenu,
   HiOutlineX,
 } from "react-icons/hi";
 
 import { portfolio } from "../../data/portfolioData";
-import { useTheme } from "../../context/ThemeContext";
+import ThemeToggle from "../ThemeToggle/ThemeToggle";
 
 const classes = bindStyles(styles);
 
 export default function Navbar() {
-  const { theme, toggleTheme } = useTheme();
   const headerRef = useRef(null);
   const menuButtonRef = useRef(null);
   const reduceMotion = useReducedMotion();
@@ -156,23 +153,7 @@ export default function Navbar() {
             className={`navbar-actions ${styles["navbar-actions-layout"]}`}
           >
             {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              aria-label="Toggle theme"
-              className={`icon-btn theme-toggle ${styles["navbar-theme-button"]}`}
-            >
-              {theme === "light" ? (
-                <HiOutlineMoon
-                  size={18}
-                  color="currentColor"
-                />
-              ) : (
-                <HiOutlineSun
-                  size={18}
-                  color="currentColor"
-                />
-              )}
-            </button>
+            <ThemeToggle />
 
             {/* Desktop Contact Button */}
             <a

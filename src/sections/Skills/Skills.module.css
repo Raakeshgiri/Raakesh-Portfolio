@@ -65,16 +65,18 @@
 }
 
 .skills-card-grid {
+  position: relative;
   width: 100%;
 
   display: grid;
+  justify-content: center;
 
   grid-template-columns:
     repeat(
       6,
       minmax(
         0,
-        1fr
+        140px
       )
     );
 
@@ -88,7 +90,7 @@
 
   min-width: 0;
 
-  min-height: 150px;
+  min-height: 120px;
 
   display: flex;
 
@@ -98,11 +100,11 @@
 
   justify-content: center;
 
-  gap: 13px;
+  gap: 8px;
 
   padding:
-    22px
-    14px;
+    14px
+    10px;
 
   overflow: hidden;
 
@@ -132,67 +134,53 @@
     box-shadow 0.3s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
 .skill-card:hover {
   background: var(--surface-hover);
 
   border-color:
     color-mix(
       in srgb,
-      var(--accent-500) 25%,
+      var(--accent-500) 45%,
       var(--surface-border)
     );
 
   box-shadow:
-    0 24px 48px
-    hsl(
-      var(--shadow-color) /
-      0.16
-    );
+    0 0 0 3px color-mix(in srgb, var(--accent-500) 12%, transparent),
+    0 12px 28px -10px color-mix(in srgb, var(--accent-500) 28%, transparent);
+}
 }
 
 .skill-card-shine {
   position: absolute;
 
-  top: -70%;
-  left: -85%;
-
-  width: 80px;
-  height: 250%;
+  inset: 0;
 
   opacity: 0;
 
   pointer-events: none;
 
-  transform:
-    rotate(25deg);
+  background: radial-gradient(
+    circle at 50% 0%,
+    color-mix(in srgb, var(--accent-500) 16%, transparent),
+    transparent 75%
+  );
 
-  background:
-    linear-gradient(
-      90deg,
-      transparent,
-      rgba(
-        255,
-        255,
-        255,
-        0.35
-      ),
-      transparent
-    );
-
-  transition:
-    left 0.7s ease,
-    opacity 0.3s ease;
+  transition: opacity 0.3s ease;
 }
 
+@media (hover: hover) and (pointer: fine) {
 .skill-card:hover
 .skill-card-shine {
-  left: 125%;
   opacity: 1;
+}
 }
 
 .skill-icon-box {
-  width: 66px;
-  height: 66px;
+  position: relative;
+  overflow: hidden;
+  width: 56px;
+  height: 56px;
 
   display: grid;
 
@@ -214,11 +202,53 @@
     background 0.3s ease;
 }
 
-.skill-card:hover
-.skill-icon-box {
-  transform:
-    translateY(-2px)
-    scale(1.05);
+.skill-name::after {
+  content: "";
+  position: absolute;
+  bottom: -5px;
+  left: 15%;
+  width: 70%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--accent-gradient);
+  transform: scaleX(0);
+  transition: transform 0.35s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .skill-card:hover .skill-name::after {
+    transform: scaleX(1);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .skill-card:hover .skill-icon-box > * {
+    animation: skill-icon-wiggle 0.65s ease-in-out;
+  }
+}
+
+@keyframes skill-icon-wiggle {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  20% {
+    transform: rotate(-12deg);
+  }
+  40% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(-6deg);
+  }
+  80% {
+    transform: rotate(3deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-name::after {
+    transition: none;
+  }
 }
 
 .skill-icon {
@@ -441,13 +471,13 @@
         4,
         minmax(
           0,
-          1fr
+          140px
         )
       );
   }
 
   .skill-card {
-    min-height: 145px;
+    min-height: 116px;
   }
 }
 
@@ -466,7 +496,7 @@
         3,
         minmax(
           0,
-          1fr
+          140px
         )
       );
 
@@ -474,18 +504,18 @@
   }
 
   .skill-card {
-    min-height: 135px;
+    min-height: 108px;
 
     padding:
-      18px
+      12px
       10px;
 
     border-radius: 19px;
   }
 
   .skill-icon-box {
-    width: 58px;
-    height: 58px;
+    width: 50px;
+    height: 50px;
 
     border-radius: 16px;
   }
@@ -508,7 +538,7 @@
         2,
         minmax(
           0,
-          1fr
+          140px
         )
       );
 
@@ -516,20 +546,20 @@
   }
 
   .skill-card {
-    min-height: 128px;
+    min-height: 100px;
 
-    gap: 11px;
+    gap: 6px;
 
     padding:
-      17px
+      10px
       8px;
 
     border-radius: 18px;
   }
 
   .skill-icon-box {
-    width: 54px;
-    height: 54px;
+    width: 46px;
+    height: 46px;
 
     border-radius: 15px;
   }

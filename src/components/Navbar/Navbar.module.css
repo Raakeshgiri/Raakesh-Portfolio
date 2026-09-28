@@ -339,20 +339,6 @@
   gap: 10px;
 }
 
-.navbar .navbar-theme-button {
-  width: 38px;
-  height: 38px;
-  padding: 0;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  background: var(--surface);
-  border: 1px solid var(--surface-border);
-  color: var(--text-primary);
-  cursor: pointer;
-  flex-shrink: 0;
-}
-
 .navbar .navbar-menu-button {
   width: 38px;
   height: 38px;
@@ -372,4 +358,11 @@
 
 .navbar .navbar-menu-icon {
   display: block;
+}
+
+@media (max-width: 400px) {
+  .navbar .navbar-inner-layout { padding-inline: 12px; }
+  .navbar .navbar-brand-layout { gap: 6px; font-size: 13px; }
+  .navbar .navbar-monogram { width: 28px; height: 28px; }
+  .navbar .navbar-actions-layout { gap: 6px; }
 }

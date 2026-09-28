@@ -15,6 +15,10 @@
   .hero-grid > div:first-child > div {
     justify-content: center;
   }
+
+  :global(#home) .hero-social-links {
+    justify-content: center;
+  }
 }
 :global(#home) .hero-role {
   margin-top: 6px;
@@ -267,4 +271,19 @@
   left: 50%;
   transform: translateX(-50%);
   color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+  .hero-portrait {
+    width: 100%;
+    max-width: 340px;
+    margin-inline: auto;
+  }
+
+  .hero-badge {
+    top: -16px;
+    right: -12px;
+    padding: 10px 12px;
+    border-radius: 16px;
+  }
 }
