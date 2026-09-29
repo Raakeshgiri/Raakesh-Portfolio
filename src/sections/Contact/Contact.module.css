@@ -146,7 +146,7 @@ a.contact-card:hover {
   position: relative;
   display: block;
   min-width: 0;
-  border: 1px solid var(--surface-border);
+  border: 2px solid var(--surface-border);
   border-radius: 14px;
   background: var(--input-bg);
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -172,23 +172,118 @@ a.contact-card:hover {
 .contact-field textarea::placeholder { color: var(--text-secondary); opacity: 0.9; }
 .contact-field textarea { min-height: 182px; resize: vertical; }
 .contact-submit {
+  --send-radius: 24px;
+  position: relative;
+  overflow: visible;
+  isolation: isolate;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  width: 100%;
-  min-height: 56px;
-  padding: 16px 24px;
+  width: min(240px, 100%);
+  align-self: center;
+  min-height: 48px;
+  padding: 12px 20px;
   border-radius: 13px;
-  background: var(--accent-gradient);
+  background: transparent;
   color: var(--text-on-accent, #fff);
   font-size: 15px;
   font-weight: 600;
   box-shadow: 0 12px 26px -12px rgba(124, 92, 255, 0.5);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
-.contact-submit:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 16px 30px -10px rgba(124, 92, 255, 0.5); }
-.contact-submit:disabled { cursor: wait; opacity: 0.7; }
+/* Animate the painted surface while preserving the button's layout footprint. */
+.contact-submit::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--accent-gradient);
+  border-radius: inherit;
+  clip-path: inset(0 round 13px);
+}
+.contact-submit:hover:not(:disabled) { transform: translateY(-2px); }
+.contact-submit:disabled { cursor: wait; }
+.contact-submit[data-state="sending"],
+.contact-submit[data-state="sent"] { box-shadow: none; }
+.contact-submit[data-state="sending"]::before {
+  animation: contact-contract 0.7s 0.2s both;
+}
+.contact-submit[data-state="sent"]::before {
+  animation: contact-expand 0.6s 0.55s both;
+}
+.contact-submit-label { position: relative; }
+.contact-submit[data-state="sending"] .contact-submit-label {
+  animation: contact-label-out 0.2s both;
+}
+.contact-submit[data-state="sent"] .contact-submit-label {
+  animation: contact-label-in 0.4s 0.85s both;
+}
+.contact-flight { position: relative; width: 20px; height: 20px; flex: 0 0 20px; }
+.contact-plane { position: absolute; inset: 0; }
+.contact-plane svg { display: block; }
+.contact-submit[data-state="sending"] .contact-plane {
+  animation: contact-launch 1.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+.contact-submit[data-state="sent"] .contact-plane { visibility: hidden; }
+.contact-flight-ring,
+.contact-flight-check {
+  position: absolute;
+  left: calc(50% - var(--send-radius));
+  top: calc(50% - var(--send-radius));
+  width: calc(var(--send-radius) * 2);
+  height: calc(var(--send-radius) * 2);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.contact-flight-ring {
+  border: 2px solid rgba(255, 255, 255, 0.25);
+  border-top-color: white;
+  animation: contact-wait 0.9s 0.8s linear infinite both;
+}
+.contact-flight-check {
+  display: grid;
+  place-items: center;
+  animation: contact-confirm 1.1s both;
+}
+.contact-flight-check svg path {
+  stroke-dasharray: 30;
+  animation: contact-check-draw 0.4s ease-out both;
+}
+@keyframes contact-contract {
+  from { clip-path: inset(0 round 13px); }
+  to { clip-path: inset(0 calc(50% - var(--send-radius)) round var(--send-radius)); }
+}
+@keyframes contact-expand {
+  from { clip-path: inset(0 calc(50% - var(--send-radius)) round var(--send-radius)); }
+  to { clip-path: inset(0 round 13px); }
+}
+@keyframes contact-label-out { to { opacity: 0; transform: translateY(8px); } }
+@keyframes contact-label-in {
+  from { opacity: 0; transform: translateX(12px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+@keyframes contact-launch {
+  0% { transform: translate(0, 0) rotate(0); opacity: 1; }
+  15% { transform: translate(-12px, 5px) rotate(-15deg); }
+  45% { transform: translate(45px, -60px) rotate(30deg) scale(1.15); opacity: 1; }
+  70% { transform: translate(75px, -10px) rotate(130deg); opacity: 1; }
+  90% { transform: translate(-40px, 30px) rotate(220deg) scale(0.6); opacity: 0.7; }
+  100% { transform: translate(-70px, 0) rotate(270deg) scale(0); opacity: 0; }
+}
+@keyframes contact-wait {
+  from { transform: rotate(0); opacity: 1; }
+  to { transform: rotate(360deg); opacity: 1; }
+}
+@keyframes contact-confirm {
+  0% { transform: scale(0.6); opacity: 0; }
+  30%, 50% { transform: scale(1); opacity: 1; }
+  100% { transform: translateX(76px) scale(0.85); opacity: 1; }
+}
+@keyframes contact-check-draw {
+  from { stroke-dashoffset: 30; }
+  to { stroke-dashoffset: 0; }
+}
 .contact-submit:focus-visible,
 a.contact-card:focus-visible { outline: 2px solid var(--accent-500); outline-offset: 4px; }
 .contact-status:empty { display: none; }
@@ -198,8 +293,6 @@ a.contact-card:focus-visible { outline: 2px solid var(--accent-500); outline-off
 [data-theme="dark"] .contact-success { color: #86efac; }
 [data-theme="dark"] .contact-error { color: #fca5a5; }
 .contact-sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.contact-spinner { animation: contact-spin 0.9s linear infinite; }
-@keyframes contact-spin { to { transform: rotate(360deg); } }
 @media (max-width: 1100px) and (min-width: 901px) {
   .contact-cards { grid-template-columns: 1fr; }
   .contact-fields-row { grid-template-columns: 1fr; }
@@ -230,7 +323,13 @@ a.contact-card:focus-visible { outline: 2px solid var(--accent-500); outline-off
   .contact-card,
 .contact-field,
 .contact-submit { transition: none; }
-  .contact-spinner { animation: none; }
+  .contact-submit[data-state]::before,
+  .contact-submit[data-state] .contact-submit-label,
+  .contact-submit[data-state] .contact-plane,
+  .contact-flight-check,
+  .contact-flight-check svg path { animation: none; }
+  .contact-flight-ring { display: none; }
+  .contact-flight-check { transform: translateX(76px) scale(0.85); }
   a.contact-card:hover,
 .contact-submit:hover:not(:disabled) { transform: none; }
 }

@@ -7,7 +7,7 @@ import {
   HiOutlineDocumentText, HiOutlineChatAlt2,
 } from "react-icons/hi";
 import { FaGithub, FaLinkedinIn } from "react-icons/fa";
-import { ArrowUpRight, Send, LoaderCircle, Check } from "lucide-react";
+import { ArrowUpRight, Send, Check } from "lucide-react";
 import { portfolio } from "../../data/portfolioData";
 
 // Add your actual LinkedIn URL here, or set portfolio.linkedin in portfolioData.js.
@@ -44,12 +44,12 @@ export default function Contact() {
 
     try {
       // Keep the same template, environment variables and field names as before.
-      await emailjs.sendForm(
+      await Promise.all([emailjs.sendForm(
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         currentForm,
         { publicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY }
-      );
+      ), new Promise((resolve) => setTimeout(resolve, reduceMotion ? 0 : 1500))]);
       if (!mounted.current) return;
       currentForm.reset();
       setSent(true);
@@ -147,12 +147,19 @@ export default function Contact() {
               <HiOutlineChatAlt2 aria-hidden="true" />
               <textarea name="message" rows={6} placeholder="Your Message" required readOnly={sending} />
             </label>
-            <button type="submit" disabled={sending} className={styles["contact-submit"]}>
-              {sending ? "Sending..." : sent ? "Message Sent!" : "Send Message"}
-              {sending ? <LoaderCircle size={20} className={styles["contact-spinner"]} aria-hidden="true" />
-                : sent ? <Check size={20} aria-hidden="true" /> : <Send size={20} aria-hidden="true" />}
+            <button type="submit" disabled={sending} className={styles["contact-submit"]}
+              data-state={sending ? "sending" : sent ? "sent" : "idle"} aria-busy={sending}>
+              <span className={styles["contact-submit-label"]}>{sending ? "Sending..." : sent ? "Message Sent!" : "Send Message"}</span>
+              <span className={styles["contact-flight"]} aria-hidden="true">
+                <span key={sending ? "sending" : sent ? "sent" : "idle"} className={styles["contact-plane"]}>
+                  <Send size={20} />
+                </span>
+              </span>
+              {sending && <span className={styles["contact-flight-ring"]} aria-hidden="true" />}
+              {sent && <span className={styles["contact-flight-check"]} aria-hidden="true"><Check size={24} /></span>}
             </button>
             <div className={styles["contact-status"]} role="status" aria-live="polite" aria-atomic="true">
+              {sending && <p className={styles["contact-sr-only"]}>Sending your message.</p>}
               {sent && <p className={styles["contact-success"]}>Your message has been sent successfully!</p>}
               {error && <p className={styles["contact-error"]}>{error}</p>}
             </div>
